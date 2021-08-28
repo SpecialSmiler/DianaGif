@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DianaGif"
         mc:Ignorable="d"
-        Title="Diana GIF" Height="300" Width="400">
+        Title="嘉然今天吃GIF" Height="300" Width="400">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
@@ -17,10 +17,11 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
+            <!--<RowDefinition Height="100"/>-->
         </Grid.RowDefinitions>
-        <TextBox Height="20" Grid.Row="0" Margin="5,0,5,0">源文件路径...</TextBox>
-        <TextBox Height="20" Grid.Row ="1" Margin="5,0,5,0">处理后文件路径...</TextBox>
-        <Button Grid.Column="1" Height="20" >
+        <TextBox Height="20" Grid.Row="0" Margin="5,0,5,0" Text="{Binding SrcPath, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <TextBox Height="20" Grid.Row ="1" Margin="5,0,5,0" Text="{Binding DstPath, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        <Button Grid.Column="1" Height="20" Command="{Binding OpenSrcFileCommand}">
             <Button.Margin>5,0,5,0</Button.Margin>
             <Button.Content>...</Button.Content>
         </Button>
@@ -29,11 +30,16 @@
             <Button.Content>...</Button.Content>
         </Button>
         <WrapPanel Grid.Row="2">
-            <TextBlock VerticalAlignment="Center" Text="Diana is watching you!" Margin="20,0,20,0"/>
-            <Image Source="./DianaWatch.jpg" Grid.Row="2"/>
+            <TextBlock VerticalAlignment="Center" Text="关注嘉然，顿顿解馋！" Margin="30,0,20,0"/>
+            <Image Source="Image/DianaWatch.jpg" Grid.Row="2"/>
         </WrapPanel>
-        <Button Grid.Column="1" Grid.Row="2" Margin="5" Content="解析"/>
-        <TextBox Grid.Row="3" IsReadOnly="True" Margin="5"/>
+        <Button Grid.Column="1" Grid.Row="2" Margin="5" Content="解析" Command="{Binding AnalyzeCommand}"/>
+        <TextBox 
+            Grid.Row="3" 
+            IsReadOnly="True" 
+            Margin="5" 
+            Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+            />
         <DockPanel Grid.Row="3" Grid.Column="1">
             <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Text="设置" Margin="5"/>
             <DockPanel DockPanel.Dock="Top" Margin="5">
@@ -52,10 +58,27 @@
                     <ComboBoxItem Content="256"/>
                 </ComboBox>
             </DockPanel>
-
-            <Button DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Height="30" Margin="5">润</Button>
+            <Button 
+                DockPanel.Dock="Bottom" 
+                VerticalAlignment="Bottom" 
+                Height="30" 
+                Margin="5"
+                Content="润"
+                Command="{Binding RunCommand}"
+                />
             <CheckBox FlowDirection="RightToLeft" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Margin="5" HorizontalAlignment="Left" Content="声音"/>
         </DockPanel>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Text="预计：xx.xxMB"/>
+        <TextBlock 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Top" 
+            Grid.Row="4" 
+            Text = "预计：xx.xxMB"
+            />
+        <!--<TextBlock
+            Background="AliceBlue"
+            Margin="5"
+            Grid.Row="5"
+            Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+            />-->
     </Grid>
 </Window>
