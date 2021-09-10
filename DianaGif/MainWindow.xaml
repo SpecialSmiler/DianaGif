@@ -4,12 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DianaGif"
+        xmlns:gif="https://github.com/XamlAnimatedGif/XamlAnimatedGif"
         mc:Ignorable="d"
-        Title="嘉然今天吃GIF" Height="300" Width="400">
+        Title="嘉然今天吃GIF" 
+        Height="330" Width="400" 
+        MinHeight="330" MinWidth="400"
+        MaxHeight="400" MaxWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -17,18 +21,23 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
-            <!--<RowDefinition Height="100"/>-->
+            <!--<RowDefinition Height="*"/>-->
         </Grid.RowDefinitions>
         <TextBox Height="20" Grid.Row="0" Margin="5,0,5,0" Text="{Binding SrcPath, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         <TextBox Height="20" Grid.Row ="1" Margin="5,0,5,0" Text="{Binding DstPath, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-        <Button Grid.Column="1" Height="20" Command="{Binding OpenSrcFileCommand}">
-            <Button.Margin>5,0,5,0</Button.Margin>
-            <Button.Content>...</Button.Content>
-        </Button>
-        <Button Grid.Column="1" Grid.Row ="1" Height="20" >
-            <Button.Margin>5,0,5,0</Button.Margin>
-            <Button.Content>...</Button.Content>
-        </Button>
+        <Button 
+            Grid.Column="1" 
+            Height="20" 
+            Command="{Binding OpenSrcFileCommand}"
+            Margin="5,0,5,0"
+            Content="打开"
+        />
+        <Button Grid.Column="1" 
+                Grid.Row ="1" 
+                Height="20" 
+                Margin="5,0,5,0"
+                Content="输出位置"
+        />
         <WrapPanel Grid.Row="2">
             <TextBlock VerticalAlignment="Center" Text="关注嘉然，顿顿解馋！" Margin="30,0,20,0"/>
             <Image Source="Image/DianaWatch.jpg" Grid.Row="2"/>
@@ -38,16 +47,20 @@
             Grid.Row="3" 
             IsReadOnly="True" 
             Margin="5" 
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
             Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
             />
         <DockPanel Grid.Row="3" Grid.Column="1">
             <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Text="设置" Margin="5"/>
             <DockPanel DockPanel.Dock="Top" Margin="5">
                 <TextBlock VerticalAlignment="Center" Text="帧率" Margin="0,0,5,0"/>
-                <ComboBox  Margin="0,0,5,0">
-                    <ComboBoxItem Content="12"/>
+                <ComboBox  Margin="0,0,5,0" 
+                           DisplayMemberPath="Name"
+                           SelectedValuePath="id"
+                           SelectionChanged="ComboBox_SelectionChanged">
+                    <!--<ComboBoxItem Content="12"/>
                     <ComboBoxItem Content="15"/>
-                    <ComboBoxItem Content="30"/>
+                    <ComboBoxItem Content="30"/>-->
                 </ComboBox>
             </DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="5">
@@ -74,11 +87,20 @@
             Grid.Row="4" 
             Text = "预计：xx.xxMB"
             />
-        <!--<TextBlock
-            Background="AliceBlue"
-            Margin="5"
-            Grid.Row="5"
-            Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+        <!--<ScrollViewer Grid.Row="5" Grid.ColumnSpan="2" Margin="10" HorizontalScrollBarVisibility="Auto">
+            -->
+        <!--<MediaElement 
+                Source="{Binding MediaElementSourcePath, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                MediaEnded="myMedia_MediaEnded"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
             />-->
+        <!--
+            <Image 
+                x:Name="GifImage" 
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+            </Image>
+        </ScrollViewer>-->
     </Grid>
 </Window>

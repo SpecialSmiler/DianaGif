@@ -24,4 +24,14 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="8.3.0" />
+    <PackageReference Include="Magick.NET.SystemDrawing" Version="4.0.5" />
+  </ItemGroup>
+
 </Project>
