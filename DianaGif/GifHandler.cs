@@ -19,7 +19,15 @@ namespace DianaGif
 		int height = 0;
 		FileInfo fi;
 		//List<(Bitmap image, int delay)> images;
-		MagickImageCollection collection;
+		public MagickImageCollection collection;
+
+		int[] ratio2to1 = { 2 };
+		int[] ratio4to1 = { 4 };
+		int[] ratio5to1 = { 5 };
+		int[] ratio5to2 = { 2, 3 };
+		int[] ratio5to4 = { 1, 1, 1, 2 };
+		int[] ratio8to5 = { 2, 2, 1, 2, 1 };
+		
 
 		//public GifBitmapDecoder decoder;
 		public void OpenGif(string gifFilePath)
@@ -84,7 +92,7 @@ namespace DianaGif
 			return sb.ToString();
 		}
 
-		public bool CreateGif(string dstFile, out string resStr)
+		public bool CreateGif(int dstDelay, string dstFile, out string resStr)
 		{
 			resStr = "";
 			if(collection.Count==0)
@@ -96,14 +104,83 @@ namespace DianaGif
 
 			// Resize each image in the collection to a width of 200. When zero is specified for the height
 			// the height will be calculated with the aspect ratio.
-			foreach (var image in collection)
-			{
-				image.Resize(200, 0);
-			}
 
-			collection.Write(imageStream);
+			int curDelay = delay;
+			MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
+
+			dstImages.Write(imageStream);
 
 			return true;
+		}
+
+		private MagickImageCollection FpsConverter(int curDelay, int dstDelay)
+		{
+			if(curDelay == dstDelay)
+			{
+				return collection;
+			}
+			else if(dstDelay > curDelay)//若帧率降低，为了保证速度不变，需要抽帧
+			{
+				float ratio = (float)dstDelay / curDelay;
+				int[] stepTable;
+				if (Math.Abs(ratio - 2f) < 0.01f)
+				{
+					stepTable = ratio2to1;
+				}
+				else if(Math.Abs(ratio - 4f) < 0.01f)
+				{
+					stepTable = ratio4to1;
+				}
+				else if (Math.Abs(ratio - 5f) < 0.01f)
+				{
+					stepTable = ratio5to1;
+				}
+				else if (Math.Abs(ratio - 2.5f) < 0.01f)
+				{
+					stepTable = ratio5to2;
+				}
+				else if (Math.Abs(ratio - 1.25f) < 0.01f)
+				{
+					stepTable = ratio5to4;
+				}
+				else if (Math.Abs(ratio - 1.6f) < 0.01f)
+				{
+					stepTable = ratio8to5;
+				}
+				else
+				{
+					//其余情况不做处理
+					return collection;
+				}
+
+				MagickImageCollection images = new MagickImageCollection();
+				int n = collection.Count;
+				int i = 0;
+				int tablePos = 0;
+				while(i < n)
+				{
+					MagickImage image = new MagickImage(collection[i]);
+					image.AnimationDelay = dstDelay;
+					images.Add(image);
+					i += stepTable[tablePos];
+					tablePos = (tablePos + 1) % stepTable.Length;
+				}
+
+				foreach (var image in images)
+				{
+					image.AnimationDelay = dstDelay;
+				}
+
+				return images;
+			}
+			else	//若Delay比原来小，最终结果是速度加快了，也可以加帧，但还是算了，因为没有意义
+			{
+				foreach(var image in collection)
+				{
+					image.AnimationDelay = dstDelay;
+				}
+				return collection;
+			}
 		}
 	}
 }

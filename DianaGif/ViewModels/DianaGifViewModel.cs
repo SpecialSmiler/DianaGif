@@ -7,9 +7,21 @@ using System.Windows;
 using System.Windows.Input;
 using Juster.Common;
 using Microsoft.Win32;
+using DianaGif.Views;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace DianaGif
 {
+	public class FpsDelay
+	{
+		public string Fps  { get; set; }
+		public int Delay { get; set; }
+		//public override string ToString()
+		//{
+		//	return Fps;
+		//}
+	}
 	public class DianaGifViewModel : INotifyPropertyChanged
 	{
 		private GifHandler gifHandler = new GifHandler();
@@ -18,11 +30,41 @@ namespace DianaGif
 		private Uri _mediaElementSourcePath;
 		private string _InfoText;
 		private string _fileSizeText;
+		private FpsDelay _selectedFpsDelay;
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged(string propertyName)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+		private List<FpsDelay> _fpsDelayList = new List<FpsDelay>()
+		{   
+			new FpsDelay(){Fps = "50", Delay = 2},
+			new FpsDelay(){Fps = "25", Delay = 4},
+			new FpsDelay(){Fps = "20", Delay = 5},
+			new FpsDelay(){Fps = "12.5", Delay = 8},
+			new FpsDelay(){Fps = "10", Delay = 10}
+		};
+		public FpsDelay SelectedFpsDelay 
+		{ 
+			get { return _selectedFpsDelay; }
+			set
+			{
+				_selectedFpsDelay = value;
+				OnPropertyChanged("SelectedFpsDelay");
+			}
+		}
+
+		public ObservableCollection<FpsDelay> FpsDelays
+		{
+			get{
+				var fpsDelays = new ObservableCollection<FpsDelay>(_fpsDelayList);
+				SelectedFpsDelay = fpsDelays.FirstOrDefault(fpsDelays => fpsDelays.Fps == "25");
+				return fpsDelays;
+			}
+
 		}
 
 		public string SrcPath
@@ -67,14 +109,14 @@ namespace DianaGif
 
 
 		public ICommand OpenSrcFileCommand { get; set; }
-		public ICommand AnalyzeCommand { get; set; }
+		public ICommand OpenImagePlayerCommand { get; set; }
 		public ICommand RunCommand { get; set; }
 		public ICommand ChangeFpsCommand { get; set; }
 
 		public DianaGifViewModel()
 		{
 			OpenSrcFileCommand = new RelayCommand(OpenSrcFileAction);
-			AnalyzeCommand = new RelayCommand(AnalyzeAction);
+			OpenImagePlayerCommand = new RelayCommand(OpenImagePlayerAction);
 			RunCommand = new RelayCommand(RunAction);
 
 			//SrcPath = "Image/diana_1.gif";//默认路径
@@ -92,24 +134,31 @@ namespace DianaGif
 				SrcPath = openFileDialog.FileName;
 				DstPath = Path.GetDirectoryName(openFileDialog.FileName) + '\\' +Path.GetFileNameWithoutExtension(openFileDialog.FileName) + "_diana.gif";
 			}
-			AnalyzeAction();
+
+			gifHandler.OpenGif(SrcPath);
+			InfoText = gifHandler.GifInfo();
+			//MediaElementSourcePath = new Uri(SrcPath);
 		}
 
-		private void AnalyzeAction()
+		private void OpenImagePlayerAction()
 		{
 			if (!File.Exists(SrcPath))
 			{
-				MessageBox.Show("文件不存在", "啊笑死", MessageBoxButton.OK, MessageBoxImage.Warning);
+				MessageBox.Show("请打开一张确实存在的图片", "啊笑死", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
-			gifHandler.OpenGif(SrcPath);
-			InfoText = gifHandler.GifInfo();
-			MediaElementSourcePath = new Uri(SrcPath);
+			ImagePlayerView imagePlayerView = new ImagePlayerView(gifHandler.collection);
+			imagePlayerView.ShowDialog();
 		}
 
 		private void RunAction()
 		{
-			if(!gifHandler.CreateGif(DstPath, out string resStr))
+			if (!File.Exists(SrcPath))
+			{
+				MessageBox.Show("请打开一张确实存在的图片", "绷不住了", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
+			if (!gifHandler.CreateGif(SelectedFpsDelay.Delay, DstPath, out string resStr))
 			{
 				MessageBox.Show(resStr, "寄！");
 			}

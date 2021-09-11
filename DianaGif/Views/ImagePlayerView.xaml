@@ -1,0 +1,21 @@
+﻿<Window x:Class="DianaGif.Views.ImagePlayerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DianaGif.Views"
+        mc:Ignorable="d"
+        x:Name="ImagePlayerWindow"
+        Title="一起看一起看" 
+        WindowStartupLocation="CenterScreen"
+        Height="200" Width="200"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize">
+    <Grid x:Name="Grid_1">
+        <Image 
+            x:Name="GifImage" 
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+        </Image>
+    </Grid>
+</Window>
