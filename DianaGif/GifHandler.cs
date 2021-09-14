@@ -5,6 +5,8 @@ using System.Windows.Media.Imaging;
 using System.IO;
 using ImageMagick;
 using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DianaGif
 {
@@ -27,7 +29,8 @@ namespace DianaGif
 		int[] ratio5to2 = { 2, 3 };
 		int[] ratio5to4 = { 1, 1, 1, 2 };
 		int[] ratio8to5 = { 2, 2, 1, 2, 1 };
-		
+
+		int progressValue = 0;
 
 		//public GifBitmapDecoder decoder;
 		public void OpenGif(string gifFilePath)
@@ -62,20 +65,8 @@ namespace DianaGif
 		public string GifInfo()
 		{
 			StringBuilder sb = new StringBuilder(200);
-			if(fileSize >= 1024 * 1024)
-			{
-				sb.Append($"File size: {((float)fileSize/(1024*1024)).ToString("0.00")} MB\n");
-			}
-			else if (fileSize >= 1024)
-			{
-				sb.Append($"File size: {((float)fileSize / 1024).ToString("0.00")} KB\n");
-			}
-			else
-			{
-				sb.Append($"File size: {fileSize} Bytes\n");
-			}
-
-			if(fi.Extension.ToLower().Equals(".gif"))
+			sb.Append($"File size: {FormatBytes(fileSize)}\n");
+			if (fi.Extension.ToLower().Equals(".gif"))
 			{
 				sb.Append($"Total frame: {totalFrame}\n");
 				sb.Append($"AnimationDelay：{delay}\n");
@@ -106,9 +97,10 @@ namespace DianaGif
 			// the height will be calculated with the aspect ratio.
 
 			int curDelay = delay;
-			MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
 
-			dstImages.Write(imageStream);
+			MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
+			//dstImages.Write(imageStream);
+			dstImages.WriteAsync(imageStream);
 
 			return true;
 		}
@@ -182,5 +174,16 @@ namespace DianaGif
 				return collection;
 			}
 		}
+		private string FormatBytes(long bytes)
+		{
+			string[] magnitudes = new string[] { "GB", "MB", "KB", "Bytes" };
+			long max = (long)Math.Pow(1024, magnitudes.Length);
+			return string.Format("{1:##.##} {0}",
+				magnitudes.FirstOrDefault(
+					magnitude => bytes > (max /= 1024)) ?? "0 Bytes",
+				(decimal)bytes / (decimal)max);
+		}
 	}
+
+
 }

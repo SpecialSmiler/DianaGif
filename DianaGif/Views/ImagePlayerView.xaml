@@ -12,10 +12,16 @@
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize">
     <Grid x:Name="Grid_1">
-        <Image 
+        <!--<Image 
             x:Name="GifImage" 
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
-        </Image>
+        </Image>-->
+        <MediaElement 
+                x:Name="GifImage"
+                MediaEnded="MediaElement_MediaEnded"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+            />
     </Grid>
 </Window>

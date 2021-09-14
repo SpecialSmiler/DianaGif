@@ -27,54 +27,16 @@ namespace DianaGif
 		public MainWindow()
 		{
 			InitializeComponent();
-			DataContext = new DianaGifViewModel();
-			//PlayGif();
+			DianaGifViewModel dianaGifViewModel = new DianaGifViewModel();
+			DataContext = dianaGifViewModel;
 		}
 
-		private void myMedia_MediaEnded(object sender, RoutedEventArgs e)
-		{
-			MediaElement mediaElement = sender as MediaElement;
-			mediaElement.Position = mediaElement.Position.Add(TimeSpan.FromMilliseconds(1));
-			//((MediaElement)sender).Position = ((MediaElement)sender).Position.Add(TimeSpan.FromMilliseconds(1));
-		}
-
-		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-
-		}
-
-		//private void PlayGif()
+		//private void myMedia_MediaEnded(object sender, RoutedEventArgs e)
 		//{
-		//	string src = "D:\\Pictures\\Asoul_pic\\dianagif\\10.gif";
-
-		//	var image = new List<(BitmapSource image, int delay)>();
-		//	using (var collection = new MagickImageCollection(src))
-		//	{
-		//		collection.Coalesce();
-		//		foreach(MagickImage magickImage in collection)
-		//		{
-		//			//magickImage.AdaptiveResize(100, 100);
-		//			image.Add((BitmapExtension.ConvertBitmap(magickImage.ToBitmap()), magickImage.AnimationDelay * 10 * 4 / 5));
-		//		}
-		//	}
-		//	int n = 0;
-		//	Task.Run(async () =>
-		//	{
-		//		while (true)
-		//		{
-		//			await Dispatcher.InvokeAsync(() =>
-		//			{
-		//				GifImage.Source = image[n].image;
-
-		//			});
-		//			n++;
-		//			if(n == image.Count)
-		//			{
-		//				n = 0;
-		//			}
-		//			await Task.Delay(image[n].delay);
-		//		}
-		//	});
+		//	MediaElement mediaElement = sender as MediaElement;
+		//	mediaElement.Position = mediaElement.Position.Add(TimeSpan.FromMilliseconds(1));
+		//	//((MediaElement)sender).Position = ((MediaElement)sender).Position.Add(TimeSpan.FromMilliseconds(1));
 		//}
+
 	}
 }

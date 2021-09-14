@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="嘉然今天吃GIF" 
         WindowStartupLocation="CenterScreen"
-        Height="400" Width="400" 
-        MinHeight="400" MinWidth="400"
+        Height="400" Width="420" 
+        MinHeight="420" MinWidth="400"
         MaxHeight="500" MaxWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -46,57 +46,61 @@
         <TextBox 
             Grid.Row="3" 
             IsReadOnly="True" 
-            Margin="5" 
+            Margin="5,5,0,5" 
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             Text="{Binding InfoText, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
             />
         <DockPanel Grid.Row="3" Grid.Column="1">
             <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Text="设置" Margin="5"/>
-            <DockPanel DockPanel.Dock="Top" Margin="5">
-                <TextBlock VerticalAlignment="Center" Text="帧率" Margin="0,0,5,0"/>
-                <ComboBox  Margin="0,0,5,0" 
-                           DisplayMemberPath="Fps"
-                           SelectedValuePath="Delay"
-                           SelectedItem="{Binding SelectedFpsDelay, UpdateSourceTrigger=PropertyChanged}"
-                           ItemsSource="{Binding FpsDelays}">
-                </ComboBox>
-            </DockPanel>
-            <!--<DockPanel DockPanel.Dock="Top" Margin="5">
-                <TextBlock VerticalAlignment="Center" Text="颜色" Margin="0,0,5,0"/>
-                <ComboBox  Margin="0,0,5,0">
-                    <ComboBoxItem Content="64"/>
-                    <ComboBoxItem Content="128"/>
-                    <ComboBoxItem Content="256"/>
-                </ComboBox>
-            </DockPanel>-->
-            <CheckBox 
-                DockPanel.Dock="Top" 
+            <StackPanel DockPanel.Dock="Top" Margin="5,0" Orientation="Vertical">
+                <WrapPanel Orientation="Horizontal">
+                    <RadioButton Content="帧率" IsChecked="True">
+                    </RadioButton>
+                    <RadioButton Content="倍率">
+                    </RadioButton>
+                </WrapPanel>
+                <DockPanel Margin="0,5">
+                    <TextBlock VerticalAlignment="Center" Text="帧率"/>
+                    <ComboBox  Margin="5,0,0,0" 
+                               DockPanel.Dock="Right"
+                                DisplayMemberPath="Fps"
+                                SelectedValuePath="Delay"
+                                SelectedItem="{Binding SelectedFpsDelay, UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding FpsDelays}">
+                    </ComboBox>
+                </DockPanel>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Top" Margin="5,0">
+                <Separator />
+                <CheckBox 
                 VerticalAlignment="Bottom" 
                 HorizontalAlignment="Left" 
                 Margin="5" 
                 Content="自定义宽高"/>
-            <DockPanel DockPanel.Dock="Top" Margin="5">
-                <TextBlock VerticalAlignment="Center" Text="高度" Margin="0,0,5,0"/>
-                <TextBox
+                <DockPanel DockPanel.Dock="Top" Margin="5">
+                    <TextBlock VerticalAlignment="Center" Text="高度" Margin="0,0,5,0"/>
+                    <TextBox
                     Margin="0,0,5,0"
                     Text="200"
                     Height="20">
-                </TextBox>
-            </DockPanel>
-            <DockPanel DockPanel.Dock="Top" Margin="5">
-                <TextBlock VerticalAlignment="Center" Text="宽度" Margin="0,0,5,0"/>
-                <TextBox
+                    </TextBox>
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top" Margin="5">
+                    <TextBlock VerticalAlignment="Center" Text="宽度" Margin="0,0,5,0"/>
+                    <TextBox
                     Margin="0,0,5,0"
                     Text="200"
                     Height="20">
-                </TextBox>
-            </DockPanel>
-            <CheckBox 
+                    </TextBox>
+                </DockPanel>
+                <CheckBox 
                 DockPanel.Dock="Top" 
                 VerticalAlignment="Bottom" 
                 HorizontalAlignment="Left" 
                 Margin="5" 
                 Content="锁定长宽比"/>
+                <Separator />
+            </StackPanel>
 
             <Button 
                 DockPanel.Dock="Bottom" 
@@ -105,6 +109,7 @@
                 Margin="5"
                 Content="润"
                 Command="{Binding RunCommand}"
+                IsEnabled="{Binding IsImageLoaded, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                 />
             <CheckBox 
                 DockPanel.Dock="Bottom" 
@@ -117,22 +122,15 @@
             HorizontalAlignment="Center" 
             VerticalAlignment="Top" 
             Grid.Row="4" 
-            Text = "预计：xx.xxMB"
+            Text = "{Binding OtherInfo, UpdateSourceTrigger=PropertyChanged}"
             />
-        <!--<ScrollViewer Grid.Row="5" Grid.ColumnSpan="2" Margin="10" HorizontalScrollBarVisibility="Auto">
-            -->
-        <!--<MediaElement 
-                Source="{Binding MediaElementSourcePath, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                MediaEnded="myMedia_MediaEnded"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-            />-->
-        <!--
-            <Image 
-                x:Name="GifImage" 
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top">
-            </Image>
-        </ScrollViewer>-->
+        <ProgressBar 
+            Grid.Column="1" 
+            Grid.Row="4" 
+            Margin="5,3" 
+            Background="White"
+            Foreground="#E799B0"
+            Value="{Binding ProgressValue, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+        </ProgressBar>
     </Grid>
 </Window>

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 using ImageMagick;
@@ -14,56 +16,75 @@ namespace DianaGif.Views
 	/// </summary>
 	public partial class ImagePlayerView : Window
 	{
-        private MagickImageCollection collection;
-		private List<(BitmapSource image, int delay)> images;
+
 		public ImagePlayerView()
 		{
 			InitializeComponent();
 		}
 
-		public ImagePlayerView(MagickImageCollection _collection)
-        {
-            collection = _collection;
-            InitializeComponent();
-			Grid_1.Width  = collection[0].Width;
-			Grid_1.Height = collection[0].Height;
-			Grid_1.MinWidth = collection[0].Width;
-			Grid_1.MinHeight = collection[0].Height;
-			//ImagePlayerWindow.Width = collection[0].Width + 100;
-			//ImagePlayerWindow.Height = collection[0].Height+ 100;
-			//ImagePlayerWindow.MinWidth = collection[0].Width + SystemParameters.BorderWidth*2;
-			//ImagePlayerWindow.MinHeight = collection[0].Height + SystemParameters.CaptionHeight + SystemParameters.BorderWidth * 2;
-			//GifImage.Width = collection[0].Width;
-			//GifImage.Height = collection[0].Height;
-			PlayGif();
-        }
+		//      public void PlayGif(MagickImageCollection collection)
+		//{
+		//	isPlay = true;
 
-        public void PlayGif()
+		//	Grid_1.Width = collection[0].Width;
+		//	Grid_1.Height = collection[0].Height;
+		//	Grid_1.MinWidth = collection[0].Width;
+		//	Grid_1.MinHeight = collection[0].Height;
+
+		//	List<(BitmapSource image, int delay)> images = new List<(BitmapSource image, int delay)>();
+		//	List<BitmapSource> temp = new List<BitmapSource>();
+		//	List<Bitmap> temp2 = new List<Bitmap>();
+
+		//	foreach (MagickImage magickImage in collection)
+		//	{
+
+		//		//magickImage.AdaptiveResize(100, 100);
+		//		Bitmap bitmap = magickImage.ToBitmap();
+		//		images.Add((BitmapExtension.ConvertBitmap(bitmap), magickImage.AnimationDelay));
+		//		//temp.Add(BitmapExtension.ConvertBitmap(bitmap));
+		//		//temp2.Add(bitmap);
+		//		bitmap.Dispose();
+
+		//	}
+		//	int n = 0;
+		//	Task.Run(async () =>
+		//	{
+		//		while (isPlay)
+		//		{
+		//			await Dispatcher.InvokeAsync(() =>
+		//			{
+		//				GifImage.Source = images[n].image;
+
+		//			});
+		//			n++;
+		//			if (n == images.Count)
+		//			{
+		//				n = 0;
+		//			}
+		//			await Task.Delay(20);
+		//		}
+		//		//images.Clear();
+		//		//collection = null;
+		//		//GifImage.Source = null;
+		//		//GC.Collect();
+		//	});
+
+		//	//images.Clear();
+		//	//foreach(var image in temp2)
+		//	//{
+		//	//	image.Dispose();
+		//	//}
+		//}
+
+		public void PlayGif(string path)
 		{
-			images = new List<(BitmapSource image, int delay)>();
-			foreach (MagickImage magickImage in collection)
-			{
-				//magickImage.AdaptiveResize(100, 100);
-				images.Add((BitmapExtension.ConvertBitmap(magickImage.ToBitmap()), magickImage.AnimationDelay * 10));
-			}
-			int n = 0;
-			Task.Run(async () =>
-			{
-				while (true)
-				{
-					await Dispatcher.InvokeAsync(() =>
-					{
-						GifImage.Source = images[n].image;
-
-					});
-					n++;
-					if (n == images.Count)
-					{
-						n = 0;
-					}
-					await Task.Delay(images[n].delay);
-				}
-			});
+			Uri uri = new Uri(path);
+			GifImage.Source = uri;
 		}
+		private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+		{
+			((MediaElement)sender).Position = ((MediaElement)sender).Position.Add(TimeSpan.FromMilliseconds(1));
+		}
+
 	}
 }
