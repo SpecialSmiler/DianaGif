@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DianaGif", "DianaGif\DianaGif.csproj", "{42C9DDB8-7A7C-4C80-9536-8CEF7C5ADE5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FpsConverter", "FpsConverter\FpsConverter.csproj", "{8E9F8478-98DD-43DD-9216-4F343774722E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSmiler.FpsConverter", "FpsConverter\SSmiler.FpsConverter.csproj", "{8E9F8478-98DD-43DD-9216-4F343774722E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

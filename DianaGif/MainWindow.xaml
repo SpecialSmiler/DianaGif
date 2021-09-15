@@ -69,13 +69,12 @@
         <DockPanel Grid.Row="3" Grid.Column="1">
             <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Text="设置" Margin="5"/>
             <DockPanel DockPanel.Dock="Top" Margin="5,5">
-                <TextBlock VerticalAlignment="Center" Text="帧率"/>
+                <TextBlock VerticalAlignment="Center" Text="延迟"/>
                 <ComboBox  Margin="5,0,0,0" 
-                            DockPanel.Dock="Right"
-                            DisplayMemberPath="Fps"
-                            SelectedValuePath="Delay"
-                            SelectedItem="{Binding SelectedFpsDelay, UpdateSourceTrigger=PropertyChanged}"
-                            ItemsSource="{Binding FpsDelays}">
+                            DisplayMemberPath="DelayName"
+                            SelectedValuePath="Delays"
+                            SelectedItem="{Binding SelectedDelay, UpdateSourceTrigger=PropertyChanged}"
+                            ItemsSource="{Binding Delays}">
                 </ComboBox>
             </DockPanel>
             <StackPanel DockPanel.Dock="Top" Margin="5,0">

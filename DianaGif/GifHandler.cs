@@ -7,6 +7,7 @@ using ImageMagick;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using SSmiler.FpsConverter;
 
 namespace DianaGif
 {
@@ -21,12 +22,6 @@ namespace DianaGif
 		FileInfo fi;
 		public MagickImageCollection collection;
 
-		//int[] ratio2to1 = { 2 };
-		//int[] ratio4to1 = { 4 };
-		//int[] ratio5to1 = { 5 };
-		//int[] ratio5to2 = { 2, 3 };
-		//int[] ratio5to4 = { 1, 1, 1, 2 };
-		//int[] ratio8to5 = { 2, 2, 1, 2, 1 };
 
 		private Dictionary<(int, int), int[]> steps = new Dictionary<(int, int), int[]>()
 		{
@@ -72,7 +67,7 @@ namespace DianaGif
 			{(5,10), new int[]{ 2 } },
 			//delay = 6 to (7,10)
 			{(6,7), new int[]{ 1, 1, 1, 1, 1, 2 } },
-			{(6,8), new int[]{ 1, 1, 1, 2, 1, 2 } },
+			{(6,8), new int[]{ 1, 1, 2, 1, 1, 2 } },
 			{(6,9), new int[]{ 1, 2 } },
 			{(6,10), new int[]{ 1, 2, 2 } },
 			//delay = 7 to (8,10)
@@ -86,9 +81,8 @@ namespace DianaGif
 			{(9,10), new int[]{ 1, 1, 1, 1, 1, 1, 1, 1, 2 } }
 		};
 
-		
+		public int Delay { get => delay;}
 
-		//public GifBitmapDecoder decoder;
 		public void OpenGif(string gifFilePath)
 		{
 			//用微软的GifBitmapDecoder
@@ -148,14 +142,14 @@ namespace DianaGif
 			using (Stream imageStream = new FileStream(dstFile, FileMode.Create, FileAccess.Write, FileShare.Write))
 			{
 				int curDelay = delay;
-				MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
+				MagickImageCollection dstImages = DelayConverter(curDelay, dstDelay);
 				dstImages.Write(imageStream);
 			}
 			return true;
 		}
 
 
-		private MagickImageCollection FpsConverter(int inputDelay, int outputDelay)
+		private MagickImageCollection DelayConverter(int inputDelay, int outputDelay)
 		{
 			if(inputDelay == outputDelay)
 			{
@@ -164,9 +158,7 @@ namespace DianaGif
 			else if(outputDelay > inputDelay)//若帧率降低，为了保证速度不变，需要抽帧
 			{
 				//float ratio = (float)dstDelay / curDelay;
-				int[] stepTable;
-
-				stepTable = steps[(inputDelay, outputDelay)];
+				int[] steps = FpsConverter.GetStepsArrayGifDelay(inputDelay, outputDelay);
 
 				MagickImageCollection images = new MagickImageCollection();
 				int n = collection.Count;
@@ -177,8 +169,8 @@ namespace DianaGif
 					MagickImage image = new MagickImage(collection[i]);
 					image.AnimationDelay = outputDelay;
 					images.Add(image);
-					i += stepTable[tablePos];
-					tablePos = (tablePos + 1) % stepTable.Length;
+					i += steps[tablePos];
+					tablePos = (tablePos + 1) % steps.Length;
 				}
 
 				foreach (var image in images)

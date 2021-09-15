@@ -15,12 +15,18 @@ using System.Threading.Tasks;
 
 namespace DianaGif
 {
-	public class FpsDelay
+	public class Delay
 	{
-		public string Fps  { get; set; }
-		public int Delay { get; set; }
+		public string DelayName { get; set; }
+		public int DelayValue { get; set; }
 
+		public Delay(string _delayName, int _delayValue)
+		{
+			DelayName = _delayName;
+			DelayValue = _delayValue;
+		}
 	}
+
 	public class DianaGifViewModel : INotifyPropertyChanged
 	{
 
@@ -30,9 +36,10 @@ namespace DianaGif
 		private Uri _mediaElementSourcePath;
 		private string _InfoText;
 		private string _otherInfo;
-		private FpsDelay _selectedFpsDelay;
+		private Delay _selectedDelay;
 		private bool _isIdle;
 		private int _progressValue;
+		private List<Delay> _delays;
 
 		//private ImagePlayerView imagePlayerView;
 
@@ -42,32 +49,65 @@ namespace DianaGif
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		private List<FpsDelay> _fpsDelayList = new List<FpsDelay>()
-		{   
-			new FpsDelay(){Fps = "50", Delay = 2},
-			new FpsDelay(){Fps = "25", Delay = 4},
-			new FpsDelay(){Fps = "20", Delay = 5},
-			new FpsDelay(){Fps = "12.5", Delay = 8},
-			new FpsDelay(){Fps = "10", Delay = 10}
-		};
-		public FpsDelay SelectedFpsDelay 
+		//private List<FpsDelay> _fpsDelayList = new List<FpsDelay>()
+		//{   
+		//	new FpsDelay(){Fps = "50", Delay = 2},
+		//	new FpsDelay(){Fps = "25", Delay = 4},
+		//	new FpsDelay(){Fps = "20", Delay = 5},
+		//	new FpsDelay(){Fps = "12.5", Delay = 8},
+		//	new FpsDelay(){Fps = "10", Delay = 10}
+		//};
+
+		//private List<(string,int)> delayList = new List<(string, int)>()
+		//{
+		//	("2", 2 ),
+		//	("3", 3 ),
+		//	("4", 4 ),
+		//	("5", 5 ),
+		//	("6", 6 ),
+		//	("7", 7 ),
+		//	("8", 8 ),
+		//	("9", 9 ),
+		//	("10", 10 )
+		//};
+
+		private int[] delayArr = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+		public Delay SelectedDelay 
 		{ 
-			get { return _selectedFpsDelay; }
+			get { return _selectedDelay; }
 			set
 			{
-				_selectedFpsDelay = value;
-				OnPropertyChanged("SelectedFpsDelay");
+				_selectedDelay = value;
+				OnPropertyChanged("SelectedDelay");
 			}
 		}
 
-		public ObservableCollection<FpsDelay> FpsDelays
+		public List<Delay> Delays
 		{
-			get{
-				var fpsDelays = new ObservableCollection<FpsDelay>(_fpsDelayList);
-				SelectedFpsDelay = fpsDelays.FirstOrDefault(fpsDelays => fpsDelays.Fps == "25");
-				return fpsDelays;
+			//get{
+			//	var oc = new ObservableCollection<(string, int)>();
+			//	oc.Add(("-", -1));
+			//	foreach(var d in delayList)
+			//	{
+			//		if(d.Item2 > gifHandler.Delay)
+			//		{
+			//			oc.Add(d);
+			//		}
+			//	}
+			//	SelectedDelay = oc.First();
+			//	return oc;
+			//}
+			get{ return _delays; }
+			set
+			{
+				_delays = value;
+				if(_delays.Count>0)
+				{
+					SelectedDelay = _delays[0];
+				}
+				OnPropertyChanged("Delays");
 			}
-
 		}
 
 		public string SrcPath
@@ -158,6 +198,7 @@ namespace DianaGif
 			MediaElementSourcePath = null;
 			IsIdle = true;
 			OtherInfo = "";
+			Delays = new List<Delay>() { new Delay("-",-1) };
 		}
 
 		//打开文件
@@ -182,6 +223,16 @@ namespace DianaGif
 			InfoText = gifHandler.GifInfo();
 			OtherInfo = "图片解析完成";
 			ProgressValue = 0;
+			List<Delay> NewDelays = new List<Delay>();
+			NewDelays.Add(new Delay("-", -1));
+			foreach(var num in delayArr)
+			{
+				if(num > gifHandler.Delay)
+				{
+					NewDelays.Add(new Delay(num.ToString(), num));
+				}
+			}
+			Delays = NewDelays;
 			IsIdle = true;
 		}
 
@@ -231,7 +282,7 @@ namespace DianaGif
 			ProgressValue = 100;
 			await Task.Run(() =>
 			{
-				if (!gifHandler.CreateGif(SelectedFpsDelay.Delay, DstPath, out string resStr))
+				if (!gifHandler.CreateGif(SelectedDelay.DelayValue, DstPath, out string resStr))
 				{
 					MessageBox.Show(resStr, "寄！");
 					return;
