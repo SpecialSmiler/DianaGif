@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ImageMagick;
 using System.Drawing;
+using DianaGif.Views;
 
 
 namespace DianaGif
@@ -24,20 +25,29 @@ namespace DianaGif
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		DianaGifViewModel dianaGifViewModel;
 		public MainWindow()
 		{
 			InitializeComponent();
-			DianaGifViewModel dianaGifViewModel = new DianaGifViewModel();
+			dianaGifViewModel = new DianaGifViewModel();
 			DataContext = dianaGifViewModel;
 		}
 
-
-		//private void myMedia_MediaEnded(object sender, RoutedEventArgs e)
-		//{
-		//	MediaElement mediaElement = sender as MediaElement;
-		//	mediaElement.Position = mediaElement.Position.Add(TimeSpan.FromMilliseconds(1));
-		//	//((MediaElement)sender).Position = ((MediaElement)sender).Position.Add(TimeSpan.FromMilliseconds(1));
-		//}
+		private void OpenImagePlayerButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (!File.Exists(dianaGifViewModel.SrcPath))
+			{
+				MessageBox.Show("请打开一张确实存在的图片", "啊笑死", MessageBoxButton.OK, MessageBoxImage.Warning);
+				return;
+			}
+			ImagePlayerView imagePlayerView = new ImagePlayerView();
+			//imagePlayerView.PlayGif(gifHandler.collection);
+			imagePlayerView.Grid_1.Width = dianaGifViewModel.GifHandler.collection[0].Width;
+			imagePlayerView.Grid_1.Height = dianaGifViewModel.GifHandler.collection[0].Height;
+			imagePlayerView.PlayGif(dianaGifViewModel.SrcPath);
+			imagePlayerView.Owner = this;
+			imagePlayerView.ShowDialog();
+		}
 
 	}
 }

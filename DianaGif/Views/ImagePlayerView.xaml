@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         x:Name="ImagePlayerWindow"
         Title="一起看一起看" 
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Height="200" Width="200"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize">

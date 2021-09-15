@@ -12,6 +12,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DianaGif
 {
@@ -29,7 +31,6 @@ namespace DianaGif
 
 	public class DianaGifViewModel : INotifyPropertyChanged
 	{
-
 		private GifHandler gifHandler = new GifHandler();
 		private string _srcPath;
 		private string _dstPath;
@@ -40,7 +41,10 @@ namespace DianaGif
 		private bool _isIdle;
 		private int _progressValue;
 		private List<Delay> _delays;
+		private ImageSource _currentBGImage;
 
+		private List<string> bgImageFilenames = new List<string>();
+		private Random rand = new Random();
 		//private ImagePlayerView imagePlayerView;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -178,19 +182,28 @@ namespace DianaGif
 			}
 		}
 
+		public ImageSource CurrentBGImage
+		{
+			get => _currentBGImage;
+			set
+			{
+				_currentBGImage = value;
+				OnPropertyChanged("CurrentBGImage");
+			}
+		}
+
 
 		public ICommand OpenSrcFileCommand { get; set; }
 		public ICommand SetDstPathCommand { get; set; }
-		public ICommand OpenImagePlayerCommand { get; set; }
 		public ICommand RunCommand { get; set; }
-		//public ICommand ChangeFpsCommand { get; set; }
+		internal GifHandler GifHandler { get => gifHandler; }
+
 
 
 		public DianaGifViewModel()
 		{
 			OpenSrcFileCommand = new RelayCommand(OpenSrcFileAction);
 			SetDstPathCommand = new RelayCommand(SetDstPathAction);
-			OpenImagePlayerCommand = new RelayCommand(OpenPlayerAction);
 			RunCommand = new RelayCommand(RunAction);
 
 			SrcPath = "";
@@ -199,6 +212,9 @@ namespace DianaGif
 			IsIdle = true;
 			OtherInfo = "";
 			Delays = new List<Delay>() { new Delay("-",-1) };
+
+			bgImageFilenames = LoadBGImages("./Image/BG/");
+			CurrentBGImage = new BitmapImage(new Uri(bgImageFilenames[rand.Next(bgImageFilenames.Count)], UriKind.Relative));
 		}
 
 		//打开文件
@@ -234,6 +250,7 @@ namespace DianaGif
 			}
 			Delays = NewDelays;
 			IsIdle = true;
+			CurrentBGImage = new BitmapImage(new Uri(bgImageFilenames[rand.Next(bgImageFilenames.Count)], UriKind.Relative));
 		}
 
 		//设置输出路径
@@ -265,7 +282,6 @@ namespace DianaGif
 			imagePlayerView.ShowDialog();
 			//GC.Collect();
 			//imagePlayerView = null;
-			
 		}
 
 		//创建图片，润！
@@ -293,5 +309,19 @@ namespace DianaGif
 			IsIdle = true;
 		}
 
+		private List<string> LoadBGImages(string directory)
+		{
+			List<string> imgs = new List<string>();
+			foreach(string file in Directory.GetFiles(directory))
+			{
+				imgs.Add(file);
+			}
+			return imgs;
+		}
+
+		private void ChangeBGImageRandomly()
+		{
+
+		}
 	}
 }
