@@ -31,6 +31,7 @@ namespace DianaGif
 			DataContext = dianaGifViewModel;
 		}
 
+
 		//private void myMedia_MediaEnded(object sender, RoutedEventArgs e)
 		//{
 		//	MediaElement mediaElement = sender as MediaElement;

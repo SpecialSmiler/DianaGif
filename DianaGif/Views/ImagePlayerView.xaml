@@ -11,7 +11,7 @@
         Height="200" Width="200"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize">
-    <Grid x:Name="Grid_1">
+    <Grid x:Name="Grid_1" >
         <!--<Image 
             x:Name="GifImage" 
             HorizontalAlignment="Left"
@@ -20,7 +20,7 @@
         <MediaElement 
                 x:Name="GifImage"
                 MediaEnded="MediaElement_MediaEnded"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Left" 
                 VerticalAlignment="Top"
             />
     </Grid>

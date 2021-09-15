@@ -23,6 +23,7 @@ namespace DianaGif
 	}
 	public class DianaGifViewModel : INotifyPropertyChanged
 	{
+
 		private GifHandler gifHandler = new GifHandler();
 		private string _srcPath;
 		private string _dstPath;
@@ -30,7 +31,7 @@ namespace DianaGif
 		private string _InfoText;
 		private string _otherInfo;
 		private FpsDelay _selectedFpsDelay;
-		private bool _isImageLoaded;
+		private bool _isIdle;
 		private int _progressValue;
 
 		//private ImagePlayerView imagePlayerView;
@@ -107,13 +108,13 @@ namespace DianaGif
 			}
 		}
 
-		public bool IsImageLoaded
+		public bool IsIdle
 		{
-			get => _isImageLoaded;
+			get => _isIdle;
 			set
 			{
-				_isImageLoaded = value;
-				OnPropertyChanged("IsImageLoaded");
+				_isIdle = value;
+				OnPropertyChanged("IsIdle");
 			}
 		}
 
@@ -139,56 +140,65 @@ namespace DianaGif
 
 
 		public ICommand OpenSrcFileCommand { get; set; }
+		public ICommand SetDstPathCommand { get; set; }
 		public ICommand OpenImagePlayerCommand { get; set; }
 		public ICommand RunCommand { get; set; }
-		public ICommand ChangeFpsCommand { get; set; }
+		//public ICommand ChangeFpsCommand { get; set; }
 
 
 		public DianaGifViewModel()
 		{
 			OpenSrcFileCommand = new RelayCommand(OpenSrcFileAction);
+			SetDstPathCommand = new RelayCommand(SetDstPathAction);
 			OpenImagePlayerCommand = new RelayCommand(OpenPlayerAction);
 			RunCommand = new RelayCommand(RunAction);
 
 			SrcPath = "";
 			InfoText = "";
 			MediaElementSourcePath = null;
-			IsImageLoaded = false;
+			IsIdle = true;
 			OtherInfo = "";
 		}
 
-		private void OpenSrcFileAction()
+		//打开文件
+		private async void OpenSrcFileAction()
 		{
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "Image files (*.gif)|*.gif|All files (*.*)|*.*";
 			if (openFileDialog.ShowDialog() == true)
 			{
 				SrcPath = openFileDialog.FileName;
-				DstPath = Path.GetDirectoryName(openFileDialog.FileName) + '\\' +Path.GetFileNameWithoutExtension(openFileDialog.FileName) + "_diana.gif";
+				DstPath = Path.GetDirectoryName(openFileDialog.FileName) + '\\' + Path.GetFileNameWithoutExtension(openFileDialog.FileName) + "_diana.gif";
+			}
+			else
+			{
+				return;
 			}
 
-			Thread thread = new Thread(new ThreadStart(() =>
-			{
-				ProgressValue = 30;
-				gifHandler.OpenGif(SrcPath);
-				ProgressValue = 90;
-				InfoText = gifHandler.GifInfo();
-				ProgressValue = 100;
-				Thread.Sleep(100);
-				ProgressValue = 0;
-				IsImageLoaded = true;
-				OtherInfo = "图片解析完成";
-			}));
-			thread.Start();
-
-			//Task task = Task.Run(async () =>
-			//{
-			//	await gifHandler.OpenGif(SrcPath);
-			//	InfoText = gifHandler.GifInfo();
-			//});
-
+			IsIdle = false;
+			OtherInfo = "正在解析图片...";
+			ProgressValue = 100;
+			await Task.Run(()=> { gifHandler.OpenGif(SrcPath); });
+			InfoText = gifHandler.GifInfo();
+			OtherInfo = "图片解析完成";
+			ProgressValue = 0;
+			IsIdle = true;
 		}
 
+		//设置输出路径
+		private void SetDstPathAction()
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Filter = "Image files (*.gif)|*.gif|All files (*.*)|*.*";
+			saveFileDialog.InitialDirectory = DstPath;
+			saveFileDialog.FileName = Path.GetFileName(DstPath);
+			if(saveFileDialog.ShowDialog() == true)
+			{
+				DstPath = saveFileDialog.FileName;
+			}
+		}
+
+		//打开图片播放器
 		private void OpenPlayerAction()
 		{
 			if (!File.Exists(SrcPath))
@@ -207,8 +217,8 @@ namespace DianaGif
 			
 		}
 
-
-		private void RunAction()
+		//创建图片，润！
+		private async void RunAction()
 		{
 			if (!File.Exists(SrcPath))
 			{
@@ -216,16 +226,20 @@ namespace DianaGif
 				return;
 			}
 
-			Thread thread = new Thread(new ThreadStart(() =>
+			IsIdle = false;
+			OtherInfo = "正在输出GIF...";
+			ProgressValue = 100;
+			await Task.Run(() =>
 			{
 				if (!gifHandler.CreateGif(SelectedFpsDelay.Delay, DstPath, out string resStr))
 				{
 					MessageBox.Show(resStr, "寄！");
+					return;
 				}
-			}));
-
-			thread.Start();
-			
+			});
+			OtherInfo = "GIF文件输出完成";
+			ProgressValue = 0;
+			IsIdle = true;
 		}
 
 	}

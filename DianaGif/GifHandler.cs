@@ -15,22 +15,78 @@ namespace DianaGif
 		long fileSize = 0;
 		int totalFrame = 0;
 		int delay = 0;
-		float fps = 0f;
 		int colorCount = 0;
 		int width = 0;
 		int height = 0;
 		FileInfo fi;
-		//List<(Bitmap image, int delay)> images;
 		public MagickImageCollection collection;
 
-		int[] ratio2to1 = { 2 };
-		int[] ratio4to1 = { 4 };
-		int[] ratio5to1 = { 5 };
-		int[] ratio5to2 = { 2, 3 };
-		int[] ratio5to4 = { 1, 1, 1, 2 };
-		int[] ratio8to5 = { 2, 2, 1, 2, 1 };
+		//int[] ratio2to1 = { 2 };
+		//int[] ratio4to1 = { 4 };
+		//int[] ratio5to1 = { 5 };
+		//int[] ratio5to2 = { 2, 3 };
+		//int[] ratio5to4 = { 1, 1, 1, 2 };
+		//int[] ratio8to5 = { 2, 2, 1, 2, 1 };
 
-		int progressValue = 0;
+		private Dictionary<(int, int), int[]> steps = new Dictionary<(int, int), int[]>()
+		{
+			//delay = 1 to (2,10)
+			{(1,2), new int[]{ 2 } },
+			{(1,3), new int[]{ 3 } },
+			{(1,4), new int[]{ 4 } },
+			{(1,5), new int[]{ 5 } },
+			{(1,6), new int[]{ 6 } },
+			{(1,7), new int[]{ 7 } },
+			{(1,8), new int[]{ 8 } },
+			{(1,9), new int[]{ 9 } },
+			{(1,10), new int[]{ 10 } },
+			//delay = 2 to (3,10)
+			{(2,3), new int[]{ 1, 2 } },
+			{(2,4), new int[]{ 2 } },
+			{(2,5), new int[]{ 2, 3 } },
+			{(2,6), new int[]{ 3 } },
+			{(2,7), new int[]{ 3 , 4 } },
+			{(2,8), new int[]{ 4 } },
+			{(2,9), new int[]{ 4, 5 } },
+			{(2,10), new int[] { 5 } },
+			//delay = 3 to (4,10)
+			{(3,4), new int[]{ 1, 1, 2} },
+			{(3,5), new int[]{ 1, 2, 2} },
+			{(3,6), new int[]{ 2 } },
+			{(3,7), new int[]{ 2, 2, 3} },
+			{(3,8), new int[]{ 2, 3, 3} },
+			{(3,9), new int[]{ 3 } },
+			{(3,10), new int[]{ 3, 3, 4 } },
+			//delay = 4 to (5,10)
+			{(4,5), new int[]{ 1, 1, 1, 2 } },
+			{(4,6), new int[]{ 1, 2 } },
+			{(4,7), new int[]{ 1, 2, 2, 2 } },
+			{(4,8), new int[]{ 2 } },
+			{(4,9), new int[]{ 2, 2, 2, 3 } },
+			{(4,10), new int[]{ 2, 3 } },
+			//delay = 5 to (6,10)
+			{(5,6), new int[]{ 1, 1, 1, 1, 2 } },
+			{(5,7), new int[]{ 1, 1, 2, 1, 2 } },
+			{(5,8), new int[]{ 1, 2, 1, 2, 2 } },
+			{(5,9), new int[]{ 1, 2, 2, 2, 2 } },
+			{(5,10), new int[]{ 2 } },
+			//delay = 6 to (7,10)
+			{(6,7), new int[]{ 1, 1, 1, 1, 1, 2 } },
+			{(6,8), new int[]{ 1, 1, 1, 2, 1, 2 } },
+			{(6,9), new int[]{ 1, 2 } },
+			{(6,10), new int[]{ 1, 2, 2 } },
+			//delay = 7 to (8,10)
+			{(7,8), new int[]{ 1, 1, 1, 1, 1, 1, 2 } },
+			{(7,9), new int[]{ 1, 1, 1, 2, 1, 1, 2 } },
+			{(7,10), new int[]{ 1, 1, 2, 1, 2, 1, 2 } },
+			//delay = 8 to (9,10)
+			{(8,9), new int[]{ 1, 1, 1, 1, 1, 1, 1, 2 } },
+			{(8,10), new int[]{ 1, 1, 1, 2} },
+			//delay = 9 to 10
+			{(9,10), new int[]{ 1, 1, 1, 1, 1, 1, 1, 1, 2 } }
+		};
+
+		
 
 		//public GifBitmapDecoder decoder;
 		public void OpenGif(string gifFilePath)
@@ -48,17 +104,15 @@ namespace DianaGif
 				return;
 			}
 
-			//images = new List<(Bitmap image, int delay)>();
 			collection = new MagickImageCollection(gifFilePath);
 			collection.Coalesce();
 			totalFrame = collection.Count;
 			if(totalFrame > 0)
 			{
-				delay = collection[0].AnimationDelay;
-				fps = 100f / delay;
 				colorCount = collection[0].ColormapSize;
 				width = collection[0].Width;
 				height = collection[0].Height;
+				delay = collection[0].AnimationDelay;
 			}
 		}
 
@@ -70,7 +124,7 @@ namespace DianaGif
 			{
 				sb.Append($"Total frame: {totalFrame}\n");
 				sb.Append($"AnimationDelay：{delay}\n");
-				sb.Append($"Fps：{fps.ToString("0.00")}\n");
+				sb.Append($"Fps：{(100f/delay).ToString("0.00")}\n");
 				sb.Append($"Color: {colorCount}\n");
 				sb.Append($"Width: {width}\n");
 				sb.Append($"Height: {height}\n");
@@ -86,64 +140,33 @@ namespace DianaGif
 		public bool CreateGif(int dstDelay, string dstFile, out string resStr)
 		{
 			resStr = "";
-			if(collection.Count==0)
+			if (collection.Count == 0)
 			{
 				resStr = "图像序列为空！";
 				return false;
 			}
-			Stream imageStream = new FileStream(dstFile, FileMode.Create, FileAccess.Write, FileShare.Write);
-
-			// Resize each image in the collection to a width of 200. When zero is specified for the height
-			// the height will be calculated with the aspect ratio.
-
-			int curDelay = delay;
-
-			MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
-			//dstImages.Write(imageStream);
-			dstImages.WriteAsync(imageStream);
-
+			using (Stream imageStream = new FileStream(dstFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+			{
+				int curDelay = delay;
+				MagickImageCollection dstImages = FpsConverter(curDelay, dstDelay);
+				dstImages.Write(imageStream);
+			}
 			return true;
 		}
 
-		private MagickImageCollection FpsConverter(int curDelay, int dstDelay)
+
+		private MagickImageCollection FpsConverter(int inputDelay, int outputDelay)
 		{
-			if(curDelay == dstDelay)
+			if(inputDelay == outputDelay)
 			{
 				return collection;
 			}
-			else if(dstDelay > curDelay)//若帧率降低，为了保证速度不变，需要抽帧
+			else if(outputDelay > inputDelay)//若帧率降低，为了保证速度不变，需要抽帧
 			{
-				float ratio = (float)dstDelay / curDelay;
+				//float ratio = (float)dstDelay / curDelay;
 				int[] stepTable;
-				if (Math.Abs(ratio - 2f) < 0.01f)
-				{
-					stepTable = ratio2to1;
-				}
-				else if(Math.Abs(ratio - 4f) < 0.01f)
-				{
-					stepTable = ratio4to1;
-				}
-				else if (Math.Abs(ratio - 5f) < 0.01f)
-				{
-					stepTable = ratio5to1;
-				}
-				else if (Math.Abs(ratio - 2.5f) < 0.01f)
-				{
-					stepTable = ratio5to2;
-				}
-				else if (Math.Abs(ratio - 1.25f) < 0.01f)
-				{
-					stepTable = ratio5to4;
-				}
-				else if (Math.Abs(ratio - 1.6f) < 0.01f)
-				{
-					stepTable = ratio8to5;
-				}
-				else
-				{
-					//其余情况不做处理
-					return collection;
-				}
+
+				stepTable = steps[(inputDelay, outputDelay)];
 
 				MagickImageCollection images = new MagickImageCollection();
 				int n = collection.Count;
@@ -152,7 +175,7 @@ namespace DianaGif
 				while(i < n)
 				{
 					MagickImage image = new MagickImage(collection[i]);
-					image.AnimationDelay = dstDelay;
+					image.AnimationDelay = outputDelay;
 					images.Add(image);
 					i += stepTable[tablePos];
 					tablePos = (tablePos + 1) % stepTable.Length;
@@ -160,7 +183,7 @@ namespace DianaGif
 
 				foreach (var image in images)
 				{
-					image.AnimationDelay = dstDelay;
+					image.AnimationDelay = outputDelay;
 				}
 
 				return images;
@@ -169,7 +192,7 @@ namespace DianaGif
 			{
 				foreach(var image in collection)
 				{
-					image.AnimationDelay = dstDelay;
+					image.AnimationDelay = outputDelay;
 				}
 				return collection;
 			}
