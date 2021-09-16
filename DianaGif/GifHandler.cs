@@ -20,8 +20,8 @@ namespace DianaGif
 		int width = 0;
 		int height = 0;
 		FileInfo fi;
+		float ratio;
 		public MagickImageCollection collection;
-
 
 		private Dictionary<(int, int), int[]> steps = new Dictionary<(int, int), int[]>()
 		{
@@ -82,6 +82,10 @@ namespace DianaGif
 		};
 
 		public int Delay { get => delay;}
+		public int Width { get => width; }
+		public int Height { get => height; }
+
+		public float Ratio { get => ratio; }
 
 		public void OpenGif(string gifFilePath)
 		{
@@ -107,6 +111,7 @@ namespace DianaGif
 				width = collection[0].Width;
 				height = collection[0].Height;
 				delay = collection[0].AnimationDelay;
+				ratio = (float)width / height;
 			}
 		}
 
@@ -131,23 +136,33 @@ namespace DianaGif
 			return sb.ToString();
 		}
 
-		public bool CreateGif(int dstDelay, string dstFile, out string resStr)
+		public void CompressGif(int outputDelay, string outputFileName)
 		{
-			resStr = "";
-			if (collection.Count == 0)
-			{
-				resStr = "图像序列为空！";
-				return false;
-			}
-			using (Stream imageStream = new FileStream(dstFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+			using (Stream imageStream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
 			{
 				int curDelay = delay;
-				MagickImageCollection dstImages = DelayConverter(curDelay, dstDelay);
+				MagickImageCollection dstImages = DelayConverter(curDelay, outputDelay);
 				dstImages.Write(imageStream);
 			}
-			return true;
 		}
 
+		public void CompressGif(int outputDelay, string outputFileName, int width = 0, int height = 0)
+		{
+			using (Stream imageStream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
+			{
+				int curDelay = delay;
+				MagickImageCollection outputImages = DelayConverter(curDelay, outputDelay);
+				if(width > 0 || height >0)
+				{
+						foreach (var image in outputImages)
+						{
+							image.Resize(width, height);
+						}
+				}
+
+				outputImages.Write(imageStream);
+			}
+		}
 
 		private MagickImageCollection DelayConverter(int inputDelay, int outputDelay)
 		{

@@ -16,7 +16,8 @@ using System.Windows.Shapes;
 using ImageMagick;
 using System.Drawing;
 using DianaGif.Views;
-
+using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace DianaGif
 {
@@ -37,7 +38,7 @@ namespace DianaGif
 		{
 			if (!File.Exists(dianaGifViewModel.SrcPath))
 			{
-				MessageBox.Show("请打开一张确实存在的图片", "啊笑死", MessageBoxButton.OK, MessageBoxImage.Warning);
+				DianaMessageBox.Show("啊笑死", "请打开一张确实存在的图片", dianaGifViewModel.GetItemRandomly(dianaGifViewModel.warningImages));
 				return;
 			}
 			ImagePlayerView imagePlayerView = new ImagePlayerView();
@@ -49,5 +50,33 @@ namespace DianaGif
 			imagePlayerView.ShowDialog();
 		}
 
+		private static readonly Regex _regex = new Regex("^[0-9]+$");
+		private void NumericText_TextInputValidation(object sender, TextCompositionEventArgs e)
+		{
+			e.Handled = !_regex.IsMatch(e.Text);//把这些不是数字的给Handle掉
+		}
+		private void NumericText_PastingValidation(object sender, DataObjectPastingEventArgs e)
+		{
+			if (e.DataObject.GetDataPresent(typeof(String)))
+			{
+				String text = (String)e.DataObject.GetData(typeof(String));
+
+				if (!_regex.IsMatch(text))
+				{
+					e.CancelCommand();
+				}
+			}
+			else
+			{
+				e.CancelCommand();
+			}
+		}
+		private void KeyDownValidation(object sender, KeyEventArgs e)
+		{
+			if(e.Key == Key.Space)
+			{
+				e.Handled = true;
+			}
+		}
 	}
 }

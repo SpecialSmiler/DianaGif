@@ -8,45 +8,101 @@
 
   <ItemGroup>
     <None Remove="DianaWatch.jpg" />
+    <None Remove="Image\BG\1m8.png" />
+    <None Remove="Image\BG\AnXiang.png" />
+    <None Remove="Image\BG\Beat.png" />
     <None Remove="Image\BG\biu.png" />
+    <None Remove="Image\BG\ComeOn.png" />
+    <None Remove="Image\BG\Dribble.png" />
+    <None Remove="Image\BG\Eating.png" />
+    <None Remove="Image\BG\Family.png" />
+    <None Remove="Image\BG\Frightened.png" />
+    <None Remove="Image\BG\GoodNight.png" />
+    <None Remove="Image\BG\Heart.png" />
+    <None Remove="Image\BG\HeartBit.png" />
+    <None Remove="Image\BG\Hello.png" />
+    <None Remove="Image\BG\Hungry.png" />
+    <None Remove="Image\BG\Lemon.png" />
+    <None Remove="Image\BG\Like.png" />
+    <None Remove="Image\BG\LikeIt.png" />
+    <None Remove="Image\BG\LueLueLue.png" />
     <None Remove="Image\BG\mua.png" />
+    <None Remove="Image\BG\Naruhodo.png" />
     <None Remove="Image\BG\No.png" />
+    <None Remove="Image\BG\OneEyeTrue.png" />
+    <None Remove="Image\BG\Spy.png" />
+    <None Remove="Image\BG\TomatoPunch.png" />
+    <None Remove="Image\BG\Victory.png" />
+    <None Remove="Image\BG\Yeah.png" />
     <None Remove="Image\BG\yyds.png" />
-    <None Remove="Image\BG\一眼真.png" />
-    <None Remove="Image\BG\一米八.png" />
-    <None Remove="Image\BG\你好.png" />
-    <None Remove="Image\BG\剪刀手.png" />
-    <None Remove="Image\BG\加油.png" />
-    <None Remove="Image\BG\原来如此.png" />
-    <None Remove="Image\BG\吓人.png" />
-    <None Remove="Image\BG\喜欢.png" />
-    <None Remove="Image\BG\嘉人们.png" />
-    <None Remove="Image\BG\嘉速心动.png" />
     <None Remove="Image\BG\垂头丧气.png" />
     <None Remove="Image\BG\失忆.png" />
-    <None Remove="Image\BG\好耶.png" />
     <None Remove="Image\BG\委屈.png" />
-    <None Remove="Image\BG\安详.png" />
-    <None Remove="Image\BG\干饭.png" />
     <None Remove="Image\BG\想你.png" />
-    <None Remove="Image\BG\敲打.png" />
-    <None Remove="Image\BG\晚安.png" />
-    <None Remove="Image\BG\暗中观察.png" />
-    <None Remove="Image\BG\柠檬.png" />
-    <None Remove="Image\BG\比心.png" />
-    <None Remove="Image\BG\流口水.png" />
-    <None Remove="Image\BG\点赞.png" />
     <None Remove="Image\BG\生气.png" />
-    <None Remove="Image\BG\略略略.png" />
-    <None Remove="Image\BG\番茄炒蛋拳.png" />
     <None Remove="Image\BG\绷不住了.png" />
     <None Remove="Image\BG\问号.png" />
     <None Remove="Image\BG\震撼.png" />
-    <None Remove="Image\BG\饿了.png" />
+    <None Remove="Image\Warning\Angry.png" />
+    <None Remove="Image\Warning\BengBuZhuLe.png" />
+    <None Remove="Image\Warning\FeelWronged.png" />
+    <None Remove="Image\Warning\HeadHangLow.png" />
+    <None Remove="Image\Warning\MemoryLoss.png" />
+    <None Remove="Image\Warning\MissYou.png" />
+    <None Remove="Image\Warning\No.png" />
+    <None Remove="Image\Warning\Shock.png" />
+    <None Remove="Image\Warning\Why.png" />
+    <None Remove="Sound\1.wav" />
+    <None Remove="Sound\2.wav" />
+    <None Remove="Sound\3.wav" />
+    <None Remove="Sound\4.wav" />
+    <None Remove="Sound\5.wav" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Image\DianaWatch.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\No.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\HeadHangLow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\MemoryLoss.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\FeelWronged.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\MissYou.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\Angry.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\BengBuZhuLe.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\Why.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Image\Warning\Shock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\1.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\2.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\3.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\4.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sound\5.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -71,103 +127,76 @@
     <Content Include="Image\BG\mua.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\No.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Image\BG\yyds.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\一眼真.png">
+    <Content Include="Image\BG\OneEyeTrue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\一米八.png">
+    <Content Include="Image\BG\1m8.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\你好.png">
+    <Content Include="Image\BG\Hello.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\剪刀手.png">
+    <Content Include="Image\BG\Victory.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\加油.png">
+    <Content Include="Image\BG\ComeOn.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\原来如此.png">
+    <Content Include="Image\BG\Naruhodo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\吓人.png">
+    <Content Include="Image\BG\Frightened.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\喜欢.png">
+    <Content Include="Image\BG\Like.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\嘉人们.png">
+    <Content Include="Image\BG\Family.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\嘉速心动.png">
+    <Content Include="Image\BG\HeartBit.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\垂头丧气.png">
+    <Content Include="Image\BG\Yeah.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\失忆.png">
+    <Content Include="Image\BG\AnXiang.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\好耶.png">
+    <Content Include="Image\BG\Eating.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\委屈.png">
+    <Content Include="Image\BG\Beat.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\安详.png">
+    <Content Include="Image\BG\GoodNight.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\干饭.png">
+    <Content Include="Image\BG\Spy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\想你.png">
+    <Content Include="Image\BG\Lemon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\敲打.png">
+    <Content Include="Image\BG\Heart.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\晚安.png">
+    <Content Include="Image\BG\Dribble.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\暗中观察.png">
+    <Content Include="Image\BG\LikeIt.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\柠檬.png">
+    <Content Include="Image\BG\LueLueLue.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\比心.png">
+    <Content Include="Image\BG\TomatoPunch.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Image\BG\流口水.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\点赞.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\生气.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\略略略.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\番茄炒蛋拳.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\绷不住了.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\问号.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\震撼.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Image\BG\饿了.png">
+    <Content Include="Image\BG\Hungry.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

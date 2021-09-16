@@ -14,6 +14,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Text.RegularExpressions;
+using System.Media;
 
 namespace DianaGif
 {
@@ -42,10 +44,15 @@ namespace DianaGif
 		private int _progressValue;
 		private List<Delay> _delays;
 		private ImageSource _currentBGImage;
+		private bool _isCustomSize;
+		private int _customWidth;
+		private int _customHeight;
+		private bool _isSettingWidth;
+		private bool _isSettingHeight;
 
-		private List<string> bgImageFilenames = new List<string>();
-		private Random rand = new Random();
-		//private ImagePlayerView imagePlayerView;
+		public List<BitmapImage> bgImages = new List<BitmapImage>();
+		public List<BitmapImage> warningImages = new List<BitmapImage>();
+		public Random rand = new Random();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged(string propertyName)
@@ -77,6 +84,7 @@ namespace DianaGif
 
 		private int[] delayArr = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
+		#region Properties
 		public Delay SelectedDelay 
 		{ 
 			get { return _selectedDelay; }
@@ -192,18 +200,80 @@ namespace DianaGif
 			}
 		}
 
+		public bool IsCustomSize 
+		{ 
+			get => _isCustomSize; 
+			set
+			{
+				_isCustomSize = value;
+				OnPropertyChanged("IsCustomSize");
+			}
+		}
+
+		public int CustomWidth
+		{
+			get =>  _customWidth;
+			set
+			{
+				_customWidth = value;
+				OnPropertyChanged("CustomWidth");
+			}
+		}
+		public int CustomHeight
+{
+			get =>  _customHeight;
+			set
+			{
+				_customHeight = value;
+				OnPropertyChanged("CustomHeight");
+			}
+		}
+		public bool IsSettingWidth 
+		{ 
+			get => _isSettingWidth; 
+			set
+			{
+				_isSettingWidth = value;
+				if (_isSettingWidth)
+				{
+					CustomWidth = gifHandler.Width;
+				}
+				else
+				{
+					CustomWidth = 0;
+				}
+				OnPropertyChanged("IsSettingWidth");
+			}
+		}
+		public bool IsSettingHeight 
+		{ 
+			get => _isSettingHeight; 
+			set
+			{
+				_isSettingHeight = value;
+				if(_isSettingHeight)
+				{
+					CustomHeight = gifHandler.Height;
+				}
+				else
+				{
+					CustomHeight = 0;
+				}
+				OnPropertyChanged("IsSettingHeight");
+			}
+		}
+		#endregion
 
 		public ICommand OpenSrcFileCommand { get; set; }
-		public ICommand SetDstPathCommand { get; set; }
+		//public ICommand SetDstPathCommand { get; set; }
 		public ICommand RunCommand { get; set; }
 		internal GifHandler GifHandler { get => gifHandler; }
-
 
 
 		public DianaGifViewModel()
 		{
 			OpenSrcFileCommand = new RelayCommand(OpenSrcFileAction);
-			SetDstPathCommand = new RelayCommand(SetDstPathAction);
+			//SetDstPathCommand = new RelayCommand(SetDstPathAction);
 			RunCommand = new RelayCommand(RunAction);
 
 			SrcPath = "";
@@ -212,9 +282,13 @@ namespace DianaGif
 			IsIdle = true;
 			OtherInfo = "";
 			Delays = new List<Delay>() { new Delay("-",-1) };
+			IsCustomSize = false;
 
-			bgImageFilenames = LoadBGImages("./Image/BG/");
-			CurrentBGImage = new BitmapImage(new Uri(bgImageFilenames[rand.Next(bgImageFilenames.Count)], UriKind.Relative));
+			bgImages = LoadFiles("./Image/BG/");
+			warningImages = LoadFiles("./Image/Warning/");
+			CurrentBGImage = GetItemRandomly(bgImages);
+			IsSettingWidth = true;
+			IsSettingHeight = false;
 		}
 
 		//打开文件
@@ -225,7 +299,6 @@ namespace DianaGif
 			if (openFileDialog.ShowDialog() == true)
 			{
 				SrcPath = openFileDialog.FileName;
-				DstPath = Path.GetDirectoryName(openFileDialog.FileName) + '\\' + Path.GetFileNameWithoutExtension(openFileDialog.FileName) + "_diana.gif";
 			}
 			else
 			{
@@ -235,93 +308,129 @@ namespace DianaGif
 			IsIdle = false;
 			OtherInfo = "正在解析图片...";
 			ProgressValue = 100;
+			int preDelay = gifHandler.Delay;
 			await Task.Run(()=> { gifHandler.OpenGif(SrcPath); });
 			InfoText = gifHandler.GifInfo();
 			OtherInfo = "图片解析完成";
 			ProgressValue = 0;
-			List<Delay> NewDelays = new List<Delay>();
-			NewDelays.Add(new Delay("-", -1));
-			foreach(var num in delayArr)
+			if(preDelay!=gifHandler.Delay)//更新ComboBox
 			{
-				if(num > gifHandler.Delay)
+				List<Delay> NewDelays = new List<Delay>();
+				NewDelays.Add(new Delay("-", -1));
+				foreach (var num in delayArr)
 				{
-					NewDelays.Add(new Delay(num.ToString(), num));
+					if (num >= gifHandler.Delay)
+					{
+						NewDelays.Add(new Delay(num.ToString(), num));
+					}
 				}
+				Delays = NewDelays;
 			}
-			Delays = NewDelays;
 			IsIdle = true;
-			CurrentBGImage = new BitmapImage(new Uri(bgImageFilenames[rand.Next(bgImageFilenames.Count)], UriKind.Relative));
-		}
-
-		//设置输出路径
-		private void SetDstPathAction()
-		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.Filter = "Image files (*.gif)|*.gif|All files (*.*)|*.*";
-			saveFileDialog.InitialDirectory = DstPath;
-			saveFileDialog.FileName = Path.GetFileName(DstPath);
-			if(saveFileDialog.ShowDialog() == true)
+			CurrentBGImage = GetItemRandomly(bgImages);
+			if(IsSettingWidth)
 			{
-				DstPath = saveFileDialog.FileName;
+				CustomWidth = gifHandler.Width;
+			}
+			if(_isSettingHeight)
+			{
+				CustomHeight = gifHandler.Height;
 			}
 		}
 
-		//打开图片播放器
-		private void OpenPlayerAction()
-		{
-			if (!File.Exists(SrcPath))
-			{
-				MessageBox.Show("请打开一张确实存在的图片", "啊笑死", MessageBoxButton.OK, MessageBoxImage.Warning);
-				return;
-			}
-			ImagePlayerView imagePlayerView = new ImagePlayerView();
-			//imagePlayerView.PlayGif(gifHandler.collection);
-			imagePlayerView.Grid_1.Width = gifHandler.collection[0].Width;
-			imagePlayerView.Grid_1.Height = gifHandler.collection[0].Height;
-			imagePlayerView.PlayGif(SrcPath);
-			imagePlayerView.ShowDialog();
-			//GC.Collect();
-			//imagePlayerView = null;
-		}
 
 		//创建图片，润！
 		private async void RunAction()
 		{
 			if (!File.Exists(SrcPath))
 			{
-				MessageBox.Show("请打开一张确实存在的图片", "绷不住了", MessageBoxButton.OK, MessageBoxImage.Warning);
+				//MessageBox.Show("请打开一张确实存在的图片", "绷不住了", MessageBoxButton.OK, MessageBoxImage.Warning);
+				DianaMessageBox.Show("绷不住了","请打开一张确实存在的图片",GetItemRandomly(warningImages));
+				return;
+			}
+			if (gifHandler.Delay >=10)
+			{
+				DianaMessageBox.Show("救不了", "当前图片帧数已经很低了（delay>=10)", GetItemRandomly(warningImages));
+				return;
+			}
+			if (SelectedDelay.DelayValue < 0)
+			{
+				DianaMessageBox.Show("快快快快快快", "请在“延迟”下拉菜单中选择一个值", GetItemRandomly(warningImages));
+				return;
+			}
+			if (gifHandler.collection.Count == 0)
+			{
+				DianaMessageBox.Show("寄", "图像序列为空", GetItemRandomly(warningImages));
+				return;
+			}
+
+			int width = 0;
+			int height = 0;
+			if (IsCustomSize)
+			{
+
+				width = CustomWidth;
+				height = CustomHeight;
+				
+				DstPath = Path.GetDirectoryName(SrcPath) +
+							'\\' + Path.GetFileNameWithoutExtension(SrcPath) +
+							$"_diana_{gifHandler.Delay}_to_{SelectedDelay.DelayName}_resize_";
+				if(width > 0)
+				{
+					DstPath += $"w_{width}.gif";
+				}
+				if(height > 0)
+				{
+					DstPath += $"h_{height}.gif";
+				}
+			}
+			else
+			{
+				DstPath = Path.GetDirectoryName(SrcPath) +
+							'\\' + Path.GetFileNameWithoutExtension(SrcPath) +
+							$"_diana_{gifHandler.Delay}_to_{SelectedDelay.DelayName}.gif";
+			}
+
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Filter = "Image files (*.gif)|*.gif|All files (*.*)|*.*";
+			saveFileDialog.InitialDirectory = DstPath;
+			saveFileDialog.FileName = Path.GetFileName(DstPath);
+			if (saveFileDialog.ShowDialog() == true)
+			{
+				DstPath = saveFileDialog.FileName;
+			}
+			else
+			{
 				return;
 			}
 
 			IsIdle = false;
 			OtherInfo = "正在输出GIF...";
 			ProgressValue = 100;
+
 			await Task.Run(() =>
 			{
-				if (!gifHandler.CreateGif(SelectedDelay.DelayValue, DstPath, out string resStr))
-				{
-					MessageBox.Show(resStr, "寄！");
-					return;
-				}
+				gifHandler.CompressGif(SelectedDelay.DelayValue, DstPath, width, height);
 			});
+
 			OtherInfo = "GIF文件输出完成";
 			ProgressValue = 0;
 			IsIdle = true;
 		}
 
-		private List<string> LoadBGImages(string directory)
+		private List<BitmapImage> LoadFiles(string directory)
 		{
-			List<string> imgs = new List<string>();
-			foreach(string file in Directory.GetFiles(directory))
+			List<BitmapImage> imgs = new List<BitmapImage>();
+			foreach(string filename in Directory.GetFiles(directory))
 			{
-				imgs.Add(file);
+				imgs.Add(new BitmapImage(new Uri("pack://application:,,," + filename)));
 			}
 			return imgs;
 		}
 
-		private void ChangeBGImageRandomly()
+		public T GetItemRandomly<T>(List<T> items)
 		{
-
+			return items[rand.Next(items.Count)];
 		}
 	}
 }

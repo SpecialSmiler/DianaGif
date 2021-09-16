@@ -3,18 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:input="clr-namespace:System.Windows.Input;assembly=PresentationCore"
         xmlns:local="clr-namespace:DianaGif"
         mc:Ignorable="d"
         x:Name="MainView"
         Title="嘉然今天吃GIF" 
         WindowStartupLocation="CenterScreen"
-        Height="400" Width="420" 
-        MinHeight="370" MinWidth="420"
-        MaxHeight="400" MaxWidth="600">
+        Height="370" Width="400" 
+        MinHeight="370" MinWidth="400"
+        MaxHeight="700" MaxWidth="600">
+    <!--<Window.Resources>
+        <local:InvertedBoolenConverter x:Key="InvertedBoolenConverter"/>
+    </Window.Resources>-->
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="12"/>
@@ -22,7 +26,6 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
-            <!--<RowDefinition Height="8"/>-->
         </Grid.RowDefinitions>
         <TextBlock 
             Grid.ColumnSpan="2" 
@@ -82,12 +85,23 @@
             >
             <TextBox.Background>
                 <!--<ImageBrush ImageSource="/Image/BG/Mua.png" Opacity="0.5" Stretch="None" AlignmentX="Right" AlignmentY="Bottom"/>-->
-                <ImageBrush ImageSource="{Binding CurrentBGImage, UpdateSourceTrigger=PropertyChanged}" Opacity="0.5" Stretch="None" AlignmentX="Right" AlignmentY="Bottom"/>
+                <ImageBrush 
+                    ImageSource="{Binding CurrentBGImage, UpdateSourceTrigger=PropertyChanged}" 
+                    Opacity="0.5" Stretch="None" 
+                    
+                    AlignmentX="Right" AlignmentY="Bottom"
+                    >
+                    <ImageBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterX="1" CenterY="1" ScaleX="0.8" ScaleY="0.8"/>
+                        </TransformGroup>
+                    </ImageBrush.RelativeTransform>
+                </ImageBrush>
             </TextBox.Background>
         </TextBox>
-        <DockPanel Grid.Row="3" Grid.Column="1">
+        <DockPanel Grid.Row="3" Grid.Column="1" Margin="0,5,0,0">
             <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Center" Text="设置" Margin="5"/>
-            <DockPanel DockPanel.Dock="Top" Margin="5,5">
+            <DockPanel DockPanel.Dock="Top" Margin="15,5">
                 <TextBlock VerticalAlignment="Center" Text="延迟"/>
                 <ComboBox  Margin="5,0,0,0" 
                             DisplayMemberPath="DelayName"
@@ -99,30 +113,49 @@
             <StackPanel DockPanel.Dock="Top" Margin="5,0">
                 <Separator />
                 <CheckBox 
-                VerticalAlignment="Bottom" 
-                HorizontalAlignment="Left" 
-                Margin="5" 
-                Content="自定义宽高"/>
-                <DockPanel DockPanel.Dock="Top" Margin="5">
-                    <TextBlock VerticalAlignment="Center" Text="高度" Margin="0,0,5,0"/>
-                    <TextBox
-                    Text="200"
-                    Height="20">
-                    </TextBox>
-                </DockPanel>
-                <DockPanel DockPanel.Dock="Top" Margin="5">
-                    <TextBlock VerticalAlignment="Center" Text="宽度" Margin="0,0,5,0"/>
-                    <TextBox
-                    Text="200"
-                    Height="20">
-                    </TextBox>
-                </DockPanel>
-                <CheckBox 
-                DockPanel.Dock="Top" 
-                VerticalAlignment="Bottom" 
-                HorizontalAlignment="Left" 
-                Margin="5" 
-                Content="锁定长宽比"/>
+                    VerticalAlignment="Bottom" 
+                    HorizontalAlignment="Left" 
+                    Margin="5" 
+                    IsChecked="{Binding IsCustomSize}"
+                    Content="自定义宽高"/>
+                <StackPanel IsEnabled="{Binding IsCustomSize}">
+                    <DockPanel DockPanel.Dock="Top" Margin="5">
+                        <RadioButton GroupName="Size"
+                                     VerticalAlignment="Center" 
+                                     Content="宽度" 
+                                     Margin="0,0,5,0"
+                                     IsChecked="{Binding IsSettingWidth}"/>
+                        <TextBox
+                            x:Name="WidthText"
+                            Text="{Binding CustomWidth}"
+                            Height="20"
+                            MaxLength="5"
+                            IsEnabled="{Binding IsSettingWidth}"
+                            PreviewKeyDown="KeyDownValidation"
+                            input:InputMethod.IsInputMethodEnabled="False"
+                            DataObject.Pasting="NumericText_PastingValidation"
+                            PreviewTextInput="NumericText_TextInputValidation">
+                        </TextBox>
+                    </DockPanel>
+                    <DockPanel DockPanel.Dock="Top" Margin="5">
+                        <RadioButton GroupName="Size"
+                                     VerticalAlignment="Center" 
+                                     Content="高度" 
+                                     Margin="0,0,5,0"
+                                     IsChecked="{Binding IsSettingHeight}"/>
+                        <TextBox
+                            x:Name="HeightText"
+                            Text="{Binding CustomHeight}"
+                            Height="20"
+                            MaxLength="5"
+                            IsEnabled="{Binding IsSettingHeight}"
+                            PreviewKeyDown="KeyDownValidation"
+                            input:InputMethod.IsInputMethodEnabled="False"
+                            DataObject.Pasting="NumericText_PastingValidation"
+                            PreviewTextInput="NumericText_TextInputValidation">
+                        </TextBox>
+                    </DockPanel>
+                </StackPanel>
                 <Separator />
             </StackPanel>
 
