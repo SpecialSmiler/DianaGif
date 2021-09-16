@@ -19,17 +19,18 @@ namespace DianaGif.Views
 	public partial class DianaMessageBox : Window
 	{
 
-		public DianaMessageBox(string title, string msg, BitmapImage iconImage)
+		public DianaMessageBox(string title, string msg)
 		{
 			InitializeComponent();
             DianaMessageBoxView.Title = title;
             MessageText.Text = msg;
-            IconImage.Source = iconImage;
+            IconImage.Source = ResourceManager.Instance.GetWarningImageRandomly();
+            ResourceManager.Instance.PlaySoundRandomly();
         }
 
-        public static bool? Show(string title, string msg, BitmapImage iconImage)
+        public static bool? Show(string title, string msg)
         {
-            var msgBox = new DianaMessageBox(title, msg, iconImage);
+            var msgBox = new DianaMessageBox(title, msg);
             return msgBox.ShowDialog();
         }
 

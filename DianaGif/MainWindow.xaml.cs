@@ -38,7 +38,7 @@ namespace DianaGif
 		{
 			if (!File.Exists(dianaGifViewModel.SrcPath))
 			{
-				DianaMessageBox.Show("啊笑死", "请打开一张确实存在的图片", dianaGifViewModel.GetItemRandomly(dianaGifViewModel.warningImages));
+				DianaMessageBox.Show("啊笑死", "请打开一张确实存在的图片");
 				return;
 			}
 			ImagePlayerView imagePlayerView = new ImagePlayerView();

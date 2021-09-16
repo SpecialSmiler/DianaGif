@@ -49,10 +49,8 @@ namespace DianaGif
 		private int _customHeight;
 		private bool _isSettingWidth;
 		private bool _isSettingHeight;
+		private bool _isPlaySound;
 
-		public List<BitmapImage> bgImages = new List<BitmapImage>();
-		public List<BitmapImage> warningImages = new List<BitmapImage>();
-		public Random rand = new Random();
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged(string propertyName)
@@ -262,13 +260,23 @@ namespace DianaGif
 				OnPropertyChanged("IsSettingHeight");
 			}
 		}
+		public bool IsPlaySound 
+		{
+			get => _isPlaySound;
+			set
+			{
+				_isPlaySound = value;
+				ResourceManager.Instance.isPlaySound = value;
+				OnPropertyChanged("IsPlaySound");
+			}
+		}
+
 		#endregion
 
 		public ICommand OpenSrcFileCommand { get; set; }
 		//public ICommand SetDstPathCommand { get; set; }
 		public ICommand RunCommand { get; set; }
 		internal GifHandler GifHandler { get => gifHandler; }
-
 
 		public DianaGifViewModel()
 		{
@@ -283,12 +291,10 @@ namespace DianaGif
 			OtherInfo = "";
 			Delays = new List<Delay>() { new Delay("-",-1) };
 			IsCustomSize = false;
-
-			bgImages = LoadFiles("./Image/BG/");
-			warningImages = LoadFiles("./Image/Warning/");
-			CurrentBGImage = GetItemRandomly(bgImages);
+			CurrentBGImage = ResourceManager.Instance.GetBGImageRandomly();
 			IsSettingWidth = true;
 			IsSettingHeight = false;
+			IsPlaySound = true;
 		}
 
 		//打开文件
@@ -327,7 +333,7 @@ namespace DianaGif
 				Delays = NewDelays;
 			}
 			IsIdle = true;
-			CurrentBGImage = GetItemRandomly(bgImages);
+			CurrentBGImage = ResourceManager.Instance.GetBGImageRandomly();
 			if(IsSettingWidth)
 			{
 				CustomWidth = gifHandler.Width;
@@ -345,22 +351,22 @@ namespace DianaGif
 			if (!File.Exists(SrcPath))
 			{
 				//MessageBox.Show("请打开一张确实存在的图片", "绷不住了", MessageBoxButton.OK, MessageBoxImage.Warning);
-				DianaMessageBox.Show("绷不住了","请打开一张确实存在的图片",GetItemRandomly(warningImages));
+				DianaMessageBox.Show("绷不住了","请打开一张确实存在的图片");
 				return;
 			}
 			if (gifHandler.Delay >=10)
 			{
-				DianaMessageBox.Show("救不了", "当前图片帧数已经很低了（delay>=10)", GetItemRandomly(warningImages));
+				DianaMessageBox.Show("救不了", "当前图片帧数已经很低了（delay>=10)");
 				return;
 			}
 			if (SelectedDelay.DelayValue < 0)
 			{
-				DianaMessageBox.Show("快快快快快快", "请在“延迟”下拉菜单中选择一个值", GetItemRandomly(warningImages));
+				DianaMessageBox.Show("快快快快快快", "请在“延迟”下拉菜单中选择一个值");
 				return;
 			}
 			if (gifHandler.collection.Count == 0)
 			{
-				DianaMessageBox.Show("寄", "图像序列为空", GetItemRandomly(warningImages));
+				DianaMessageBox.Show("寄", "图像序列为空");
 				return;
 			}
 
@@ -416,21 +422,6 @@ namespace DianaGif
 			OtherInfo = "GIF文件输出完成";
 			ProgressValue = 0;
 			IsIdle = true;
-		}
-
-		private List<BitmapImage> LoadFiles(string directory)
-		{
-			List<BitmapImage> imgs = new List<BitmapImage>();
-			foreach(string filename in Directory.GetFiles(directory))
-			{
-				imgs.Add(new BitmapImage(new Uri("pack://application:,,," + filename)));
-			}
-			return imgs;
-		}
-
-		public T GetItemRandomly<T>(List<T> items)
-		{
-			return items[rand.Next(items.Count)];
 		}
 	}
 }

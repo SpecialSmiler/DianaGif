@@ -172,6 +172,7 @@
                 DockPanel.Dock="Bottom" 
                 VerticalAlignment="Bottom" 
                 Margin="5" 
+                IsChecked="{Binding IsPlaySound}"
                 HorizontalAlignment="Center" 
                 Content="界面声音"/>
         </DockPanel>
