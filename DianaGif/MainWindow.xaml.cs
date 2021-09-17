@@ -32,7 +32,10 @@ namespace DianaGif
 			InitializeComponent();
 			dianaGifViewModel = new DianaGifViewModel();
 			DataContext = dianaGifViewModel;
+			DianaEyes.MouseDown += ShowDocument;
 		}
+
+
 
 		private void OpenImagePlayerButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -77,6 +80,12 @@ namespace DianaGif
 			{
 				e.Handled = true;
 			}
+		}
+
+		private void ShowDocument(object sender, MouseButtonEventArgs e)
+		{
+			DianaGifDocView docView = new DianaGifDocView();
+			docView.Show();
 		}
 	}
 }

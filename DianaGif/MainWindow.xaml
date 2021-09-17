@@ -68,7 +68,7 @@
         />-->
         <WrapPanel Grid.Row="2">
             <TextBlock VerticalAlignment="Center" Text="关注嘉然，顿顿解馋！" Margin="30,0,20,0"/>
-            <Image Source="Image/DianaWatch.jpg" Grid.Row="2"/>
+            <Image x:Name="DianaEyes" Source="Image/DianaWatch.jpg" Grid.Row="2"/>
         </WrapPanel>
         <Button 
             Grid.Column="1" Grid.Row="2" 
