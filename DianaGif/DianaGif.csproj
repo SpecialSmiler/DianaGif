@@ -4,10 +4,12 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Image\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="DianaWatch.jpg" />
+    <None Remove="icon.ico" />
     <None Remove="Image\BG\1m8.png" />
     <None Remove="Image\BG\AnXiang.png" />
     <None Remove="Image\BG\Beat.png" />
@@ -43,6 +45,7 @@
     <None Remove="Image\BG\绷不住了.png" />
     <None Remove="Image\BG\问号.png" />
     <None Remove="Image\BG\震撼.png" />
+    <None Remove="Image\Cover.png" />
     <None Remove="Image\Warning\Angry.png" />
     <None Remove="Image\Warning\BengBuZhuLe.png" />
     <None Remove="Image\Warning\FeelWronged.png" />
@@ -57,9 +60,13 @@
     <None Remove="Sound\3.wav" />
     <None Remove="Sound\4.wav" />
     <None Remove="Sound\5.wav" />
+    <None Remove="Src_diana_2_to_4.gif" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Image\icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Image\DianaWatch.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

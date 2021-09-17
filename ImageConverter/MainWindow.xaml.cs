@@ -39,10 +39,10 @@ namespace ImageConverter
 			//settings.Format = MagickFormat.WebP;
 			foreach (var fileName in fileNames)
 			{
-				string outputFileName = Path.GetDirectoryName(fileName) + "\\output\\" + Path.GetFileNameWithoutExtension(fileName) + ".png";
+				string outputFileName = Path.GetDirectoryName(fileName) + "\\output\\" + Path.GetFileNameWithoutExtension(fileName) + ".ico";
 				using(var image = new MagickImage(fileName))
 				{
-					image.Format = MagickFormat.Png;
+					image.Format = MagickFormat.Ico;
 					image.Write(outputFileName);
 				}
 			}

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DianaGif", "DianaGif\DianaG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SSmiler.FpsConverter", "FpsConverter\SSmiler.FpsConverter.csproj", "{8E9F8478-98DD-43DD-9216-4F343774722E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageConverter", "ImageConverter\ImageConverter.csproj", "{F7657344-0327-4F08-A433-84DDCD6076AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageConverter", "ImageConverter\ImageConverter.csproj", "{F7657344-0327-4F08-A433-84DDCD6076AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
