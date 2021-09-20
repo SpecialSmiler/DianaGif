@@ -10,8 +10,7 @@
         Title="嘉然今天吃GIF" 
         WindowStartupLocation="CenterScreen"
         Height="370" Width="400" 
-        MinHeight="370" MinWidth="400"
-        MaxHeight="700" MaxWidth="600">
+        MinHeight="370" MinWidth="400">
     <!--<Window.Resources>
         <local:InvertedBoolenConverter x:Key="InvertedBoolenConverter"/>
     </Window.Resources>-->
@@ -156,9 +155,8 @@
                         </TextBox>
                     </DockPanel>
                 </StackPanel>
-                <Separator />
+                <Separator/>
             </StackPanel>
-
             <Button 
                 DockPanel.Dock="Bottom" 
                 VerticalAlignment="Bottom" 

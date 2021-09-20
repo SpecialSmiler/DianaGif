@@ -51,6 +51,8 @@ namespace DianaGif
 		private bool _isSettingHeight;
 		private bool _isPlaySound;
 
+		//private bool _isCanConvertDelay = false;
+
 
 		public event PropertyChangedEventHandler PropertyChanged;
 		protected void OnPropertyChanged(string propertyName)
@@ -276,6 +278,7 @@ namespace DianaGif
 		public ICommand OpenSrcFileCommand { get; set; }
 		//public ICommand SetDstPathCommand { get; set; }
 		public ICommand RunCommand { get; set; }
+
 		internal GifHandler GifHandler { get => gifHandler; }
 
 		public DianaGifViewModel()
@@ -289,13 +292,15 @@ namespace DianaGif
 			MediaElementSourcePath = null;
 			IsIdle = true;
 			OtherInfo = "";
-			Delays = new List<Delay>() { new Delay("-",-1) };
+			Delays = new List<Delay>() { new Delay("不变",-1) };
 			IsCustomSize = false;
 			CurrentBGImage = ResourceManager.Instance.GetBGImageRandomly();
 			IsSettingWidth = true;
 			IsSettingHeight = false;
 			IsPlaySound = true;
 		}
+
+
 
 		//打开文件
 		private async void OpenSrcFileAction()
@@ -322,10 +327,10 @@ namespace DianaGif
 			if(preDelay!=gifHandler.Delay)//更新ComboBox
 			{
 				List<Delay> NewDelays = new List<Delay>();
-				NewDelays.Add(new Delay("-", -1));
+				NewDelays.Add(new Delay("不变", -1));
 				foreach (var num in delayArr)
 				{
-					if (num >= gifHandler.Delay)
+					if (num > gifHandler.Delay)
 					{
 						NewDelays.Add(new Delay(num.ToString(), num));
 					}
@@ -344,43 +349,34 @@ namespace DianaGif
 			}
 		}
 
-
 		//创建图片，润！
 		private async void RunAction()
 		{
+			int inputDelay = gifHandler.Delay;
+			int outputDelay = SelectedDelay.DelayValue;
+
 			if (!File.Exists(SrcPath))
 			{
-				//MessageBox.Show("请打开一张确实存在的图片", "绷不住了", MessageBoxButton.OK, MessageBoxImage.Warning);
 				DianaMessageBox.Show("绷不住了","请打开一张确实存在的图片");
 				return;
 			}
-			if (gifHandler.Delay >=10)
-			{
-				DianaMessageBox.Show("救不了", "当前图片帧数已经很低了（delay>=10)");
-				return;
-			}
+
+
 			if (SelectedDelay.DelayValue < 0)
 			{
-				DianaMessageBox.Show("快快快快快快", "请在“延迟”下拉菜单中选择一个值");
-				return;
-			}
-			if (gifHandler.collection.Count == 0)
-			{
-				DianaMessageBox.Show("寄", "图像序列为空");
-				return;
+				outputDelay = gifHandler.Delay;
 			}
 
 			int width = 0;
 			int height = 0;
 			if (IsCustomSize)
 			{
-
 				width = CustomWidth;
 				height = CustomHeight;
 				
 				DstPath = Path.GetDirectoryName(SrcPath) +
 							'\\' + Path.GetFileNameWithoutExtension(SrcPath) +
-							$"_diana_{gifHandler.Delay}_to_{SelectedDelay.DelayName}_resize_";
+							$"_diana_{inputDelay}_to_{outputDelay}_resize_";
 				if(width > 0)
 				{
 					DstPath += $"w_{width}.gif";
@@ -394,7 +390,7 @@ namespace DianaGif
 			{
 				DstPath = Path.GetDirectoryName(SrcPath) +
 							'\\' + Path.GetFileNameWithoutExtension(SrcPath) +
-							$"_diana_{gifHandler.Delay}_to_{SelectedDelay.DelayName}.gif";
+							$"_diana_{inputDelay}_to_{outputDelay}.gif";
 			}
 
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -416,7 +412,7 @@ namespace DianaGif
 
 			await Task.Run(() =>
 			{
-				gifHandler.CompressGif(SelectedDelay.DelayValue, DstPath, width, height);
+				gifHandler.CompressGif(outputDelay, DstPath, width, height);
 			});
 
 			OtherInfo = "GIF文件输出完成";

@@ -46,8 +46,8 @@ namespace DianaGif
 			}
 			ImagePlayerView imagePlayerView = new ImagePlayerView();
 			//imagePlayerView.PlayGif(gifHandler.collection);
-			imagePlayerView.Grid_1.Width = dianaGifViewModel.GifHandler.collection[0].Width;
-			imagePlayerView.Grid_1.Height = dianaGifViewModel.GifHandler.collection[0].Height;
+			imagePlayerView.Grid_1.Width = dianaGifViewModel.GifHandler.Collection[0].Width;
+			imagePlayerView.Grid_1.Height = dianaGifViewModel.GifHandler.Collection[0].Height;
 			imagePlayerView.PlayGif(dianaGifViewModel.SrcPath);
 			imagePlayerView.Owner = this;
 			imagePlayerView.ShowDialog();

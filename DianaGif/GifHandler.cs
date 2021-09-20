@@ -20,8 +20,7 @@ namespace DianaGif
 		int width = 0;
 		int height = 0;
 		FileInfo fi;
-		float ratio;
-		public MagickImageCollection collection;
+		private MagickImageCollection _collection;
 
 		private Dictionary<(int, int), int[]> steps = new Dictionary<(int, int), int[]>()
 		{
@@ -85,7 +84,11 @@ namespace DianaGif
 		public int Width { get => width; }
 		public int Height { get => height; }
 
-		public float Ratio { get => ratio; }
+
+		public MagickImageCollection Collection
+		{
+			get => _collection;
+		}
 
 		public void OpenGif(string gifFilePath)
 		{
@@ -102,16 +105,15 @@ namespace DianaGif
 				return;
 			}
 
-			collection = new MagickImageCollection(gifFilePath);
-			collection.Coalesce();
-			totalFrame = collection.Count;
+			_collection = new MagickImageCollection(gifFilePath);
+			_collection.Coalesce();
+			totalFrame = _collection.Count;
 			if(totalFrame > 0)
 			{
-				colorCount = collection[0].ColormapSize;
-				width = collection[0].Width;
-				height = collection[0].Height;
-				delay = collection[0].AnimationDelay;
-				ratio = (float)width / height;
+				colorCount = _collection[0].ColormapSize;
+				width = _collection[0].Width;
+				height = _collection[0].Height;
+				delay = _collection[0].AnimationDelay;
 			}
 		}
 
@@ -136,52 +138,48 @@ namespace DianaGif
 			return sb.ToString();
 		}
 
-		public void CompressGif(int outputDelay, string outputFileName)
-		{
-			using (Stream imageStream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
-			{
-				int curDelay = delay;
-				MagickImageCollection dstImages = DelayConverter(curDelay, outputDelay);
-				dstImages.Write(imageStream);
-			}
-		}
+		//public void CompressGif(int outputDelay, string outputFileName)
+		//{
+		//	using (Stream imageStream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
+		//	{
+		//		int curDelay = delay;
+		//		MagickImageCollection dstImages = DelayConverter(curDelay, outputDelay);
+		//		dstImages.Write(imageStream);
+		//	}
+		//}
 
 		public void CompressGif(int outputDelay, string outputFileName, int width = 0, int height = 0)
 		{
 			using (Stream imageStream = new FileStream(outputFileName, FileMode.Create, FileAccess.Write, FileShare.Write))
 			{
-				int curDelay = delay;
-				MagickImageCollection outputImages = DelayConverter(curDelay, outputDelay);
-				if(width > 0 || height >0)
+				int inputDelay = delay;
+				MagickImageCollection outputImages = DelayConverter(inputDelay, outputDelay);
+				if (width > 0 || height > 0)
 				{
-						foreach (var image in outputImages)
-						{
-							image.Resize(width, height);
-						}
+					foreach (var image in outputImages)
+					{
+						image.Resize(width, height);
+					}
 				}
-
+				outputImages.Optimize();
 				outputImages.Write(imageStream);
 			}
 		}
 
 		private MagickImageCollection DelayConverter(int inputDelay, int outputDelay)
 		{
-			if(inputDelay == outputDelay)
-			{
-				return collection;
-			}
-			else if(outputDelay > inputDelay)//若帧率降低，为了保证速度不变，需要抽帧
+			if(outputDelay > inputDelay)//若帧率降低，为了保证速度不变，需要抽帧
 			{
 				//float ratio = (float)dstDelay / curDelay;
 				int[] steps = FpsConverter.GetStepsArrayGifDelay(inputDelay, outputDelay);
 
 				MagickImageCollection images = new MagickImageCollection();
-				int n = collection.Count;
+				int n = Collection.Count;
 				int i = 0;
 				int tablePos = 0;
 				while(i < n)
 				{
-					MagickImage image = new MagickImage(collection[i]);
+					MagickImage image = new MagickImage(Collection[i]);
 					image.AnimationDelay = outputDelay;
 					images.Add(image);
 					i += steps[tablePos];
@@ -195,13 +193,14 @@ namespace DianaGif
 
 				return images;
 			}
-			else	//若Delay比原来小，最终结果是速度加快了，也可以加帧，但还是算了，因为没有意义
+			else//若不需要抽帧
 			{
-				foreach(var image in collection)
+				MagickImageCollection tempImages = new MagickImageCollection();
+				foreach(var img in Collection)
 				{
-					image.AnimationDelay = outputDelay;
+					tempImages.Add(new MagickImage(img));
 				}
-				return collection;
+				return tempImages;
 			}
 		}
 		private string FormatBytes(long bytes)
