@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Image\icon.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>

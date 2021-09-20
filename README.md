@@ -1,5 +1,9 @@
 # DianaGIF
 
+Github下载：https://github.com/SpecialSmiler/DianaGif/releases/
+
+Gitee下载：https://gitee.com/special-smiler/diana-gif/releases/
+
 
 
 ## **功能：**
