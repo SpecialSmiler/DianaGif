@@ -10,6 +10,10 @@
 *.userosscache
 *.sln.docstates
 
+README.assets/
+*.drawio
+Graph/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
