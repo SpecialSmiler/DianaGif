@@ -9,8 +9,8 @@
         x:Name="MainView"
         Title="嘉然今天吃GIF" 
         WindowStartupLocation="CenterScreen"
-        Height="370" Width="400" 
-        MinHeight="370" MinWidth="400">
+        Height="400" Width="400" 
+        MinHeight="400" MinWidth="400">
     <!--<Window.Resources>
         <local:InvertedBoolenConverter x:Key="InvertedBoolenConverter"/>
     </Window.Resources>-->
@@ -157,6 +157,15 @@
                 </StackPanel>
                 <Separator/>
             </StackPanel>
+            <Button
+                DockPanel.Dock="Top"
+                Height="20"
+                Margin="10,5"
+                Content="拆分帧"
+                Command="{Binding SeparateCommand}"
+                IsEnabled="{Binding IsIdle, UpdateSourceTrigger=PropertyChanged}"
+                />
+
             <Button 
                 DockPanel.Dock="Bottom" 
                 VerticalAlignment="Bottom" 

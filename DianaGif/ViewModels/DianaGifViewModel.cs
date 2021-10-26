@@ -278,6 +278,7 @@ namespace DianaGif
 		public ICommand OpenSrcFileCommand { get; set; }
 		//public ICommand SetDstPathCommand { get; set; }
 		public ICommand RunCommand { get; set; }
+		public ICommand SeparateCommand { get; set; }
 
 		internal GifHandler GifHandler { get => gifHandler; }
 
@@ -285,6 +286,7 @@ namespace DianaGif
 		{
 			OpenSrcFileCommand = new RelayCommand(OpenSrcFileAction);
 			//SetDstPathCommand = new RelayCommand(SetDstPathAction);
+			SeparateCommand = new RelayCommand(SeperateAction);
 			RunCommand = new RelayCommand(RunAction);
 
 			SrcPath = "";
@@ -299,6 +301,8 @@ namespace DianaGif
 			IsSettingHeight = false;
 			IsPlaySound = true;
 		}
+
+
 
 
 
@@ -416,6 +420,45 @@ namespace DianaGif
 			});
 
 			OtherInfo = "GIF文件输出完成";
+			ProgressValue = 0;
+			IsIdle = true;
+		}
+
+		//拆分图片
+		private async void SeperateAction()
+		{
+			if (!File.Exists(SrcPath))
+			{
+				DianaMessageBox.Show("绷不住了", "请打开一张确实存在的图片");
+				return;
+			}
+
+
+			string path = Path.GetDirectoryName(SrcPath)
+							+ '\\' + Path.GetFileNameWithoutExtension(SrcPath);
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.Filter = "Image files (*.png)|*.png|All files (*.*)|*.*";
+			saveFileDialog.InitialDirectory = path;
+			saveFileDialog.FileName = Path.GetFileName(path);
+			if (saveFileDialog.ShowDialog() == true)
+			{
+				path = saveFileDialog.FileName;
+			}
+			else
+			{
+				return;
+			}
+
+			IsIdle = false;
+			OtherInfo = "正在拆分gif成图片序列";
+			ProgressValue = 100;
+
+			await Task.Run(() =>
+			{
+				gifHandler.SeperateAndSaveGif(path);
+			});
+
+			OtherInfo = "图片序列输出完成";
 			ProgressValue = 0;
 			IsIdle = true;
 		}

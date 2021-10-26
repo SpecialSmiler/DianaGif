@@ -166,6 +166,25 @@ namespace DianaGif
 			}
 		}
 
+		public void SeperateAndSaveGif(string dstPath)
+		{
+			if(dstPath.Substring(dstPath.Length-4, 4).ToLower().Equals(".png"))
+			{
+				dstPath = dstPath.Substring(0, dstPath.Length - 4);
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.Capacity = 200;
+			sb.Append(dstPath);
+			
+			int originLength = sb.Length;
+			for (int i = 0; i < Collection.Count; i++)
+			{
+				sb.AppendFormat($"_{i}.png");
+				Collection[i].Write(sb.ToString());
+				sb.Remove(originLength, sb.Length - originLength);
+			}
+		}
+
 		private MagickImageCollection DelayConverter(int inputDelay, int outputDelay)
 		{
 			if(outputDelay > inputDelay)//若帧率降低，为了保证速度不变，需要抽帧
